@@ -1,45 +1,54 @@
-import { Form, Formik } from 'formik';
 import React from 'react';
+import {useFormik} from 'formik';
 import styles from './RegistrationPage.module.scss';
-import { UserGender } from '../../type';
-import { Field } from './Field';
+import {UserGender} from '../../types';
+import {fieldList} from './const';
+import {Field} from './Field';
 
-export type RegistrationPageProps = {};
+export type RegistrationPageProps = Record<string, never>;
 export type InitialValues = {
     firstName: string;
     lastName: string;
-    age: number | null;
+    age: number | undefined;
     gender: UserGender | null;
     interests: string;
     city: string;
     email: string;
     password: string;
-}
+};
 
 const initialValues: InitialValues = {
-  firstName: '',
-  lastName: '',
-  age: null,
-  city: '',
-  email: '',
-  gender: null,
-  interests: '',
-  password: ''
+    firstName: '',
+    lastName: '',
+    age: undefined,
+    city: '',
+    email: '',
+    gender: UserGender.Male,
+    interests: '',
+    password: '',
 };
 
 export const RegistrationPage: React.FC<RegistrationPageProps> = () => {
-  return <div className={styles.root}>
-        <Formik
-            initialValues={initialValues}
-            onSubmit={() => {}}
-        >
-            {() => (
-                <Form>
-                    <Field type="input" name="name" title="Имя" required/>
+    const formik = useFormik({
+        initialValues,
+        onSubmit: () => {},
+    });
 
-                    <button type="submit">Зарегистрироваться</button>
-                </Form>
-            )}
-        </Formik>
-    </div>;
+    return (
+        <div className={styles.root}>
+            <form className={styles.form} onSubmit={formik.handleSubmit}>
+                <div className={styles.fields}>
+                    {fieldList.map((field) => {
+                        return (
+                            <Field key={field.id} {...field} {...formik.getFieldProps(field.id)} />
+                        );
+                    })}
+                </div>
+
+                <button type="submit" className={styles.submit}>
+                    Зарегистрироваться
+                </button>
+            </form>
+        </div>
+    );
 };

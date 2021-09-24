@@ -1,18 +1,47 @@
 import React from 'react';
-import { Field as FormikField } from 'formik';
 import styles from './Field.module.scss';
-export type FieldProps = {
-    name: string;
+import {BaseFieldProps, NumberField, SelectField} from './types';
+
+export type FieldSelectOption = {
+    value: string;
     title: string;
-    type: string;
-    required: boolean;
 };
 
-export const Field: React.FC<FieldProps> = ({ name, title, type, required }) => {
-  return (
+const isSelectedField = (props: FieldProps): props is SelectField => {
+    return props.type === 'select';
+};
+
+const isDefaultField = (props: FieldProps): props is SelectField => {
+    return props.type !== 'select';
+};
+
+export type FieldProps = BaseFieldProps | SelectField | NumberField;
+
+export const Field: React.FC<FieldProps> = (props) => {
+    return (
         <div className={styles.root}>
-            <label htmlFor={name}>{title}</label>
-            <FormikField id={name} name={name} type={type} required />
+            <label htmlFor={props.id} className={styles.label}>
+                {props.title}
+            </label>
+
+            {isSelectedField(props) && (
+                <select
+                    id={props.id}
+                    className={styles.field}
+                    value={props.value}
+                    onChange={props.onChange}
+                >
+                    {props.options.map((option) => {
+                        return (
+                            <option value={option.value} key={option.value}>
+                                {option.title}
+                            </option>
+                        );
+                    })}
+                </select>
+            )}
+
+            {isDefaultField(props) && <input className={styles.field} {...props} />}
         </div>
-  );
+    );
 };

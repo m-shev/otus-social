@@ -5,7 +5,9 @@
     },
     "extends": [
         "plugin:react/recommended",
-        "standard"
+        "plugin:react-hooks/recommended",
+        "plugin:@typescript-eslint/recommended",
+        "plugin:prettier/recommended",
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -16,14 +18,43 @@
         "sourceType": "module"
     },
     "plugins": [
-        "react",
         "@typescript-eslint",
+        "react",
+        "react-hooks",
         "prettier"
     ],
     "rules": {
         "no-use-before-define": "off",
         "@typescript-eslint/no-use-before-define": ["error"],
         "semi": ["error", "always"],
-        "no-extra-semi": ["error"]
+        "no-extra-semi": ["error"],
+        "prettier/prettier": [
+            "error"
+        ],
+        "sort-imports": "off",
+        "arrow-body-style": [
+            "warn",
+            "always"
+        ],
+        "arrow-parens": [
+            "warn",
+            "always"
+        ],
+        "no-magic-numbers": "off",
+        "@typescript-eslint/no-magic-numbers": [
+            "error",
+            {
+                "ignore": [
+                    -1,
+                    0,
+                    1,
+                    2
+                ],
+                "ignoreEnums": true,
+                "ignoreNumericLiteralTypes": true,
+                "detectObjects": true
+            }
+        ]
     }
 }
+
