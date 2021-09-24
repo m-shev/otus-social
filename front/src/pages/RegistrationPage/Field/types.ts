@@ -14,12 +14,12 @@ export type BaseFieldProps = FieldInputProps<
     required: boolean;
 };
 
-export type SelectField = BaseFieldProps & {
+export type SelectFieldProps = BaseFieldProps & {
     options: FieldSelectOption[];
     type: 'select';
 };
 
-export type NumberField = BaseFieldProps & {
+export type NumberFieldProps = BaseFieldProps & {
     min?: number;
     max?: number;
     type: 'number';

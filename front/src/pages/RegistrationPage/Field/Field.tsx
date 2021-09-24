@@ -1,21 +1,16 @@
 import React from 'react';
 import styles from './Field.module.scss';
-import {BaseFieldProps, NumberField, SelectField} from './types';
+import {BaseFieldProps, NumberFieldProps, SelectFieldProps} from './types';
 
-export type FieldSelectOption = {
-    value: string;
-    title: string;
-};
+export type FieldProps = BaseFieldProps | SelectFieldProps | NumberFieldProps;
 
-const isSelectedField = (props: FieldProps): props is SelectField => {
+const isSelectedFieldProps = (props: FieldProps): props is SelectFieldProps => {
     return props.type === 'select';
 };
 
-const isDefaultField = (props: FieldProps): props is SelectField => {
+const isBaseFieldProps = (props: FieldProps): props is BaseFieldProps | NumberFieldProps => {
     return props.type !== 'select';
 };
-
-export type FieldProps = BaseFieldProps | SelectField | NumberField;
 
 export const Field: React.FC<FieldProps> = (props) => {
     return (
@@ -24,7 +19,7 @@ export const Field: React.FC<FieldProps> = (props) => {
                 {props.title}
             </label>
 
-            {isSelectedField(props) && (
+            {isSelectedFieldProps(props) && (
                 <select
                     id={props.id}
                     className={styles.field}
@@ -41,7 +36,7 @@ export const Field: React.FC<FieldProps> = (props) => {
                 </select>
             )}
 
-            {isDefaultField(props) && <input className={styles.field} {...props} />}
+            {isBaseFieldProps(props) && <input className={styles.field} {...props} />}
         </div>
     );
 };

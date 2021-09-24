@@ -1,21 +1,42 @@
 import {UserGender} from '../../types';
 import {FieldProps} from './Field';
-import {NumberField, SelectField} from './Field/types';
+import {NumberFieldProps, SelectFieldProps} from './Field/types';
 
 type DefaultFiledItem = Pick<FieldProps, 'id' | 'title' | 'required' | 'type'>;
 
 type SelectFieldItem = DefaultFiledItem &
-    Pick<SelectField, 'options' | 'type'> & {
+    Pick<SelectFieldProps, 'options' | 'type'> & {
         type: 'select';
     };
 
-type NumberFieldItem = DefaultFiledItem & Pick<NumberField, 'min' | 'max' | 'type'>;
+type NumberFieldItem = DefaultFiledItem & Pick<NumberFieldProps, 'min' | 'max' | 'type'>;
 
 type FieldItem = DefaultFiledItem | SelectFieldItem | NumberFieldItem;
+
+export type InitialValues = {
+    firstName: string;
+    lastName: string;
+    age: number | undefined;
+    gender: UserGender | null;
+    interests: string;
+    city: string;
+    email: string;
+    password: string;
+};
 
 export const MIN_USER_AGE = 10;
 export const MAX_USER_AGE = 200;
 
+export const initialValues: InitialValues = {
+    firstName: '',
+    lastName: '',
+    age: undefined,
+    city: '',
+    email: '',
+    gender: UserGender.Male,
+    interests: '',
+    password: '',
+};
 export const fieldList: FieldItem[] = [
     {
         id: 'firstName',

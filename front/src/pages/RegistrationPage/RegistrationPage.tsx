@@ -1,32 +1,10 @@
 import React from 'react';
 import {useFormik} from 'formik';
 import styles from './RegistrationPage.module.scss';
-import {UserGender} from '../../types';
-import {fieldList} from './const';
+import {fieldList, initialValues} from './const';
 import {Field} from './Field';
 
 export type RegistrationPageProps = Record<string, never>;
-export type InitialValues = {
-    firstName: string;
-    lastName: string;
-    age: number | undefined;
-    gender: UserGender | null;
-    interests: string;
-    city: string;
-    email: string;
-    password: string;
-};
-
-const initialValues: InitialValues = {
-    firstName: '',
-    lastName: '',
-    age: undefined,
-    city: '',
-    email: '',
-    gender: UserGender.Male,
-    interests: '',
-    password: '',
-};
 
 export const RegistrationPage: React.FC<RegistrationPageProps> = () => {
     const formik = useFormik({
