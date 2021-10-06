@@ -1,15 +1,26 @@
 import React from 'react';
 import styles from './Field.module.scss';
-import {BaseFieldProps, NumberFieldProps, SelectFieldProps} from './types';
-
-export type FieldProps = BaseFieldProps | SelectFieldProps | NumberFieldProps;
+import {
+    BaseFieldProps,
+    CheckboxFieldProps,
+    FieldProps,
+    FieldType,
+    NumberFieldProps,
+    SelectFieldProps,
+} from './types';
 
 const isSelectedFieldProps = (props: FieldProps): props is SelectFieldProps => {
-    return props.type === 'select';
+    return props.type === FieldType.Select;
 };
 
 const isBaseFieldProps = (props: FieldProps): props is BaseFieldProps | NumberFieldProps => {
-    return props.type !== 'select';
+    return !([FieldType.Select, FieldType.Checkbox] as Array<string | FieldType>).includes(
+        props.type,
+    );
+};
+
+const isCheckboxProps = (props: FieldProps): props is CheckboxFieldProps => {
+    return props.type === FieldType.Checkbox;
 };
 
 export const Field: React.FC<FieldProps> = (props) => {

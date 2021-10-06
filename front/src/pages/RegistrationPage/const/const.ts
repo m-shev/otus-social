@@ -1,6 +1,6 @@
-import {UserGender} from '../../types';
-import {FieldProps} from './Field';
-import {NumberFieldProps, SelectFieldProps} from './Field/types';
+import {UserGender} from '../../../types';
+import {FieldProps} from '../Field';
+import {NumberFieldProps, SelectFieldProps} from '../Field/types';
 
 type DefaultFiledItem = Pick<FieldProps, 'id' | 'title' | 'required' | 'type'>;
 

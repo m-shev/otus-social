@@ -1,6 +1,12 @@
 import {FieldInputProps} from 'formik';
 
-export type FieldSelectOption = {
+export enum FieldType {
+    Select = 'select',
+    Input = 'input',
+    Checkbox = 'checkbox',
+}
+
+export type FieldOption = {
     value: string;
     title: string;
 };
@@ -10,13 +16,18 @@ export type BaseFieldProps = FieldInputProps<
 > & {
     id: string;
     title: string;
-    type: string;
+    type: FieldType | string;
     required: boolean;
 };
 
 export type SelectFieldProps = BaseFieldProps & {
-    options: FieldSelectOption[];
+    options: FieldOption[];
     type: 'select';
+};
+
+export type CheckboxFieldProps = BaseFieldProps & {
+    options: FieldOption[];
+    type: 'checkbox';
 };
 
 export type NumberFieldProps = BaseFieldProps & {
@@ -24,3 +35,5 @@ export type NumberFieldProps = BaseFieldProps & {
     max?: number;
     type: 'number';
 };
+
+export type FieldProps = BaseFieldProps | SelectFieldProps | NumberFieldProps | CheckboxFieldProps;
