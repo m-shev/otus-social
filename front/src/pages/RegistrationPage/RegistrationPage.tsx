@@ -14,6 +14,8 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = () => {
 
     return (
         <div className={styles.root}>
+            <h1 className={styles.header}>Социальная сеть</h1>
+            <h2>Регистрация</h2>
             <form className={styles.form} onSubmit={formik.handleSubmit}>
                 <div className={styles.fields}>
                     {fieldList.map((field) => {

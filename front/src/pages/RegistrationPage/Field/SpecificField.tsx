@@ -46,9 +46,19 @@ export const SpecificField: React.FC<SpecificFieldProps> = (props) => {
     }
 
     if (isCheckboxProps(props)) {
+        return (
+            <div className={styles.checkboxGroup}>
+                {props.options.map((option) => {
+                    return (
+                        <label key={option.value} className={styles.field}>
+                            <input key={option.value} {...props} />
+                            {option.title}
+                        </label>
+                    );
+                })}
+            </div>
+        );
     }
 
-    if (isBaseFieldProps(props)) {
-        return <input className={styles.field} {...props} />;
-    }
+    return <input className={styles.field} {...props} />;
 };

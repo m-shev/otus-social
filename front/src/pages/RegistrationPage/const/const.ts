@@ -1,6 +1,12 @@
 import {UserGender} from '../../../types';
-import {FieldProps} from '../Field';
-import {NumberFieldProps, SelectFieldProps} from '../Field/types';
+import {
+    CheckboxFieldProps,
+    FieldProps,
+    FieldType,
+    NumberFieldProps,
+    SelectFieldProps,
+} from '../Field/types';
+import {cityOptions, interestOptions} from './options';
 
 type DefaultFiledItem = Pick<FieldProps, 'id' | 'title' | 'required' | 'type'>;
 
@@ -11,7 +17,7 @@ type SelectFieldItem = DefaultFiledItem &
 
 type NumberFieldItem = DefaultFiledItem & Pick<NumberFieldProps, 'min' | 'max' | 'type'>;
 
-type FieldItem = DefaultFiledItem | SelectFieldItem | NumberFieldItem;
+type FieldItem = DefaultFiledItem | SelectFieldItem | NumberFieldItem | CheckboxFieldProps;
 
 export type InitialValues = {
     firstName: string;
@@ -77,14 +83,16 @@ export const fieldList: FieldItem[] = [
     {
         id: 'interests',
         title: 'Интересы',
-        type: 'input',
+        type: FieldType.Checkbox,
+        options: interestOptions,
         required: false,
     },
     {
         id: 'city',
         title: 'Город',
-        type: 'input',
-        required: false,
+        type: FieldType.Select,
+        options: cityOptions,
+        required: true,
     },
     {
         id: 'email',
