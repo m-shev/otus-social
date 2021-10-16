@@ -9,10 +9,15 @@ type Config struct {
 }
 
 type Db struct {
-	Password string
-	User string
-	HOST string
-	PORT string
+	Password          string
+	User              string
+	Host              string
+	Port              string
+	DbName            string
+	MaxOpenConnection int
+	MaxIdleConnection int
+	ConnMaxLifetime   time.Duration
+	MigrationPath     string
 }
 
 type App struct {
