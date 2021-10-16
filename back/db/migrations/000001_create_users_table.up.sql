@@ -5,6 +5,6 @@ CREATE TABLE user
     surname  VARCHAR(255) NOT NULL,
     age      TINYINT UNSIGNED NOT NULL,
     city     VARCHAR(255) NOT NULL,
-    email    VARCHAR(255) NOT NULL,
+    email    VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL
 );
