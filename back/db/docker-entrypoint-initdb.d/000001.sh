@@ -1,11 +1,9 @@
 ##!/bin/bash
-#set -e
-mysqlp=123
-upass='pass'
+set -e
+mysqlp=1234
+upass='123qwe'
 
-mysql -u "root" -p"$mysqlp" -e "create user 'social'@'%' identified by '"$upass"'";
-#-e "create user 'social'@'%' identified $upass"
-#-- #mysql -u root -p"$mysqlp"
-#-- #create user social@% identified by 'pass';
+mysql -u root -p"$mysqlp" -e "create user 'social'@'%' identified by '"$upass"'";
+mysql -u root -p"$mysqlp" -e "create database socialdb";
+mysql -u root -p"$mysqlp" -e "grant create, insert, update, delete, alter on socialdb.* to social";
 
-#create user 'social'@'%' identified by 'pass';

@@ -100,4 +100,16 @@ export const fieldList: FieldItem[] = [
         type: 'email',
         required: true,
     },
+    {
+        id: 'password',
+        title: 'Пароль',
+        type: 'password',
+        required: true,
+    },
+    {
+        id: 'password2',
+        title: 'Повторите пароль',
+        type: 'password',
+        required: true,
+    },
 ];

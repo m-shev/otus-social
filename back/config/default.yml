@@ -1,0 +1,5 @@
+db:
+  Password: "123qwe"
+  User: "social"
+  Port: "3306"
+  Host: "0.0.0.0"
