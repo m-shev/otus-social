@@ -1,13 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/m-shev/otus-social/api"
 	"github.com/m-shev/otus-social/internal/config"
-	"github.com/m-shev/otus-social/internal/connector"
 	"github.com/m-shev/otus-social/internal/migration"
-	"github.com/m-shev/otus-social/internal/repositories/user"
 	"log"
+	"net/http"
 )
 
 func main() {
@@ -15,38 +14,23 @@ func main() {
 	conf := config.GetConfig()
 	m := migration.NewManager(conf.Db, logger)
 	m.Up()
-	conn := connector.NewDbConnector(conf.Db, logger)
-	userRepository := user.NewRepository(conn)
 
-	createdUser, err := userRepository.Create(user.CreateUserForm{
-		Name:     "alex",
-		Surname:  "shev",
-		Age:      20,
-		City:     "Moscow",
-		Email:    "sobaka3@some.ru",
-		Password: "qwerty",
-		Interests: []string{"спорт", "музыка", "работа", "космос"},
-	})
-
-	if err != nil {
-		fmt.Println(err)
+	router := makeRouter(conf, logger)
+	server := &http.Server{
+		Addr: "0.0.0.0:3005",
+		Handler: router,
 	}
 
-	fmt.Println(createdUser)
-
-	//router := makeRouter()
-	//server := &http.Server{
-	//	Addr: "0.0.0.0:3005",
-	//	Handler: router,
-	//}
-	//
-	//if err := server.ListenAndServe(); err != nil {
-	//	log.Print("server start error: ", err)
-	//}
+	if err := server.ListenAndServe(); err != nil {
+		logger.Print("server start error: ", err)
+	}
 }
 
-func makeRouter() *gin.Engine {
+func makeRouter(conf config.Config, logger *log.Logger) *gin.Engine {
+	a := api.NewApi(conf.Db, logger)
 	handler := gin.New()
+	handler.Use(gin.Logger())
+	handler.POST("/user/registration", a.Registration)
 
 	return handler
 }

@@ -1,9 +1,12 @@
-package user
+package user_storage
 
-import "strings"
+import (
+	"github.com/m-shev/otus-social/internal/services/user"
+	"strings"
+)
 
-func (r *Repository) getInterestsByNames(interests []string) ([]Interest, error) {
-	result := make([]Interest, 0)
+func (r *Repository) getInterestsByNames(interests []string) ([]user.Interest, error) {
+	result := make([]user.Interest, 0)
 
 	if len(interests) == 0 {
 		return result, nil
@@ -32,7 +35,7 @@ func (r *Repository) getInterestsByNames(interests []string) ([]Interest, error)
 	return result, nil
 }
 
-func notExistedInterests(existed map[string]Interest, interests []string) []string {
+func notExistedInterests(existed map[string]user.Interest, interests []string) []string {
 	newInterest := make([]string, 0)
 
 	for _, v := range interests {
@@ -44,8 +47,8 @@ func notExistedInterests(existed map[string]Interest, interests []string) []stri
 	return newInterest
 }
 
-func (r *Repository) createInterests(interest []string) ([]Interest, error) {
-	created := make([]Interest, 0)
+func (r *Repository) createInterests(interest []string) ([]user.Interest, error) {
+	created := make([]user.Interest, 0)
 
 	if len(interest) == 0 {
 		return created, nil
@@ -84,10 +87,10 @@ func (r *Repository) createInterests(interest []string) ([]Interest, error) {
 	return created, nil
 }
 
-func (r *Repository) findInterestsByNames(interests []string) (map[string]Interest, error) {
+func (r *Repository) findInterestsByNames(interests []string) (map[string]user.Interest, error) {
 	query := "select * from interest where name in (?" + strings.Repeat(",?", len(interests)-1) + ")"
 	args := make([]interface{}, 0, len(interests))
-	found := make(map[string]Interest)
+	found := make(map[string]user.Interest)
 
 	for _, v := range interests {
 		args = append(args, v)
@@ -96,7 +99,7 @@ func (r *Repository) findInterestsByNames(interests []string) (map[string]Intere
 	rows, err := r.db.QueryContext(r.createContext(), query, args...)
 
 	for rows.Next() {
-		interest := Interest{}
+		interest := user.Interest{}
 
 		if err = rows.Scan(&interest.Id, &interest.Name); err != nil {
 			return found, err
