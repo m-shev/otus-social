@@ -7,6 +7,7 @@ type CreateUserForm struct {
 	City string
 	Email string
 	Password string
+	Interests []string
 }
 
 type User struct {
@@ -17,4 +18,10 @@ type User struct {
 	City string
 	Email string
 	Password string
+	Interests []string
+}
+
+type Interest struct {
+	Id int
+	Name string
 }

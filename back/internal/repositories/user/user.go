@@ -18,6 +18,7 @@ func NewRepository(con *connector.Connector) *Repository {
 }
 
 func (r *Repository) Create(form CreateUserForm) (User, error) {
+	var user User
 	query := `insert into user(name, surname, age, city, email, password)
 				values (?, ?, ?, ?, ?, ?)`
 
@@ -25,13 +26,19 @@ func (r *Repository) Create(form CreateUserForm) (User, error) {
 		query, form.Name, form.Surname, form.Age, form.City, form.Email, form.Password)
 
 	if err != nil {
-		return User{}, err
+		return user, err
 	}
 
 	id, err := result.LastInsertId()
 
 	if err != nil {
-		return User{}, err
+		return user, err
+	}
+
+	err = r.addInterest(int(id), form.Interests)
+
+	if err != nil {
+		return user, err
 	}
 
 	return r.GetById(int(id))
@@ -48,6 +55,36 @@ func (r *Repository) GetById(id int) (User, error) {
 
 	return user, err
 }
+
+
+func (r *Repository) addInterest(userId int, interestNames []string) error {
+	interests, err := r.getInterestsByNames(interestNames)
+
+	if err != nil {
+		return err
+	}
+
+	query := "insert into user_interest(userId, interestId) values"
+
+	params := make([]interface{}, 0)
+
+	for i, v := range interests {
+		if i ==0 {
+			query += " (?, ?)"
+		} else {
+			query += ", (?, ?)"
+		}
+
+		params = append(params, userId)
+		params = append(params, v.Id)
+	}
+
+	_, err = r.db.ExecContext(r.createContext(), query, params...)
+
+	return err
+}
+
+
 
 func (r *Repository) createContext() context.Context {
 	ctx, _ := context.WithTimeout(context.Background(), queryTimeout)

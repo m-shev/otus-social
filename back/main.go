@@ -23,8 +23,9 @@ func main() {
 		Surname:  "shev",
 		Age:      20,
 		City:     "Moscow",
-		Email:    "sobaka@some.ru",
+		Email:    "sobaka3@some.ru",
 		Password: "qwerty",
+		Interests: []string{"спорт", "музыка", "работа", "космос"},
 	})
 
 	if err != nil {

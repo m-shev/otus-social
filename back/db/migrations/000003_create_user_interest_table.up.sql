@@ -1,0 +1,6 @@
+create table user_interest (
+  userId INT,
+  interestId INT,
+  FOREIGN KEY (userId) REFERENCES user (id) ON DELETE CASCADE,
+  FOREIGN KEY (interestId) REFERENCES interest (id) ON DELETE CASCADE
+);
