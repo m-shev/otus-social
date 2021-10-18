@@ -1,3 +1,10 @@
 .root {
+  width: 270px;
+}
 
+.linkWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
