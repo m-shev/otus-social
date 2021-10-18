@@ -5,7 +5,7 @@ import {
     FieldType,
     NumberFieldProps,
     SelectFieldProps,
-} from '../Field/types';
+} from '../../../components/Field/types';
 import {cityOptions, interestOptions} from './options';
 
 type DefaultFiledItem = Pick<FieldProps, 'id' | 'title' | 'required' | 'type'>;

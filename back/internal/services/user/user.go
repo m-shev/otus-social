@@ -31,7 +31,7 @@ func (s *Service) Create(form CreateUserForm) (User, error) {
 	u, err := s.repository.Create(form)
 
 	if errors.Is(err, ErrorUserAlreadyCreated) {
-		return User{}, fmt.Errorf("error, user with email: %s has already been created", form.Email)
+		return User{}, fmt.Errorf("user with email: %s has already been created", form.Email)
 	}
 
 	return u, err

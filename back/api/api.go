@@ -37,6 +37,7 @@ func (a *Api) Registration(c *gin.Context) {
 
 	if err != nil {
 		c.String(http.StatusBadRequest, err.Error())
+		return
 	}
 
 	c.JSON(http.StatusOK, u)

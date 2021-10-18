@@ -1,8 +1,8 @@
 import React from 'react';
 import {useFormik} from 'formik';
 import styles from './RegistrationPage.module.scss';
-import {fieldList, initialValues} from './const/const';
-import {Field} from './Field';
+import {fieldList, initialValues} from './const';
+import {Field} from '../../components/Field';
 
 export type RegistrationPageProps = Record<string, never>;
 
