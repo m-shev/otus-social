@@ -159,7 +159,7 @@ func (group *RouterGroup) StaticFile(relativePath, filepath string) IRoutes {
 
 // Static serves files from the given file system root.
 // Internally a http.FileServer is used, therefore http.NotFound is used instead
-// of the AppRouter's NotFound handler.
+// of the Router's NotFound handler.
 // To use the operating system's file system implementation,
 // use :
 //     router.Static("/static", "/var/www")

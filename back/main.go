@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/m-shev/otus-social/api"
 	"github.com/m-shev/otus-social/internal/config"
@@ -30,6 +31,10 @@ func makeRouter(conf config.Config, logger *log.Logger) *gin.Engine {
 	a := api.NewApi(conf.Db, logger)
 	handler := gin.New()
 	handler.Use(gin.Logger())
+	handler.Use(cors.New(cors.Config{
+		AllowAllOrigins:        false,
+		AllowOrigins:          []string{"http://localhost:3000"},
+	}))
 	handler.POST("/user/registration", a.Registration)
 
 	return handler

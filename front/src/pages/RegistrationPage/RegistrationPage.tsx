@@ -3,32 +3,66 @@ import {useFormik} from 'formik';
 import styles from './RegistrationPage.module.scss';
 import {fieldList, initialValues} from './const';
 import {Field} from '../../components/Field';
+import {useCreateUser} from './hooks';
+import {useHistory} from 'react-router';
 
 export type RegistrationPageProps = Record<string, never>;
 
+function getSetFieldProps(
+    fieldId: string,
+    setFieldValue: (field: string, value: any) => void,
+): (value: any) => void {
+    return (value: any) => {
+        setFieldValue(fieldId, value);
+    };
+}
+
 export const RegistrationPage: React.FC<RegistrationPageProps> = () => {
+    const {onSubmit, isFetch, requestState, error} = useCreateUser();
+
     const formik = useFormik({
         initialValues,
-        onSubmit: () => {},
+        onSubmit: onSubmit,
     });
+
+    const pushHistory = useHistory();
+
+    if (requestState === 'success') {
+        setTimeout(() => {
+            pushHistory.push('/');
+        }, 2500);
+    }
 
     return (
         <div className={styles.root}>
             <h1 className={styles.header}>Социальная сеть</h1>
             <h2>Регистрация</h2>
-            <form className={styles.form} onSubmit={formik.handleSubmit}>
-                <div className={styles.fields}>
-                    {fieldList.map((field) => {
-                        return (
-                            <Field key={field.id} {...field} {...formik.getFieldProps(field.id)} />
-                        );
-                    })}
-                </div>
+            {requestState !== 'success' ? (
+                <form className={styles.form} onSubmit={formik.handleSubmit}>
+                    <div className={styles.fields}>
+                        {fieldList.map((field) => {
+                            return (
+                                <Field
+                                    error={formik.errors[field.id]}
+                                    key={field.id}
+                                    {...field}
+                                    {...formik.getFieldProps(field.id)}
+                                    setFieldValue={getSetFieldProps(field.id, formik.setFieldValue)}
+                                />
+                            );
+                        })}
+                    </div>
 
-                <button type="submit" className={styles.submit}>
-                    Зарегистрироваться
-                </button>
-            </form>
+                    <button type="submit" className={styles.submit} disabled={isFetch}>
+                        {isFetch ? '...' : ' Зарегистрироваться'}
+                    </button>
+                </form>
+            ) : (
+                <>
+                    <span>Поздравляем с успешной регистрацией</span>
+                    <span>Сейчас вы будете направлены на главную страницу...</span>
+                </>
+            )}
         </div>
     );
 };

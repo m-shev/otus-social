@@ -118,6 +118,10 @@ func (r * Repository) getUserInterests(userId int) ([]user.Interest, error) {
 }
 
 func (r *Repository) addInterest(userId int, interestNames []string) error {
+	if len(interestNames) == 0 {
+		return nil
+	}
+
 	interests, err := r.getInterestsByNames(interestNames)
 
 	if err != nil {

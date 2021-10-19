@@ -1445,7 +1445,7 @@ r.POST("/test", func(c *gin.Context) {
 })
 ```
 
-Issuing a AppRouter redirect, use `HandleContext` like below.
+Issuing a Router redirect, use `HandleContext` like below.
 
 ``` go
 r.GET("/test", func(c *gin.Context) {

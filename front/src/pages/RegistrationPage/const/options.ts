@@ -1,45 +1,45 @@
 export const interestOptions = [
     {
-        value: 'music',
+        value: 'музыка',
         title: 'Музыка',
     },
     {
-        value: 'film',
+        value: 'фильмы',
         title: 'Фильмы',
     },
     {
-        value: 'sport',
+        value: 'спорт',
         title: 'Спорт',
     },
     {
-        value: 'PC games',
+        value: 'компьютерные игры',
         title: 'Компьютерные игры',
     },
     {
-        value: 'travel',
+        value: 'путешествия',
         title: 'Путешествия',
     },
 ];
 
 export const cityOptions = [
     {
-        value: 'Moscow',
+        value: 'Москва',
         title: 'Москва',
     },
     {
-        value: 'Spb',
+        value: 'Санкт-Петербург',
         title: 'Санкт-Петербург',
     },
     {
-        value: 'Odessa',
+        value: 'Одесса',
         title: 'Одесса',
     },
     {
-        value: 'Vologda',
+        value: 'Вологда',
         title: 'Вологда',
     },
     {
-        value: 'Vladivostok',
+        value: 'Владивосток',
         title: 'Владивосток',
     },
 ];

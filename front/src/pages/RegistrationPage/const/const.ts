@@ -8,7 +8,9 @@ import {
 } from '../../../components/Field/types';
 import {cityOptions, interestOptions} from './options';
 
-type DefaultFiledItem = Pick<FieldProps, 'id' | 'title' | 'required' | 'type'>;
+type DefaultFiledItem = Pick<FieldProps, 'title' | 'required' | 'type'> & {
+    id: keyof CreateFormValues;
+};
 
 type SelectFieldItem = DefaultFiledItem &
     Pick<SelectFieldProps, 'options' | 'type'> & {
@@ -17,31 +19,35 @@ type SelectFieldItem = DefaultFiledItem &
 
 type NumberFieldItem = DefaultFiledItem & Pick<NumberFieldProps, 'min' | 'max' | 'type'>;
 
-type FieldItem = DefaultFiledItem | SelectFieldItem | NumberFieldItem | CheckboxFieldProps;
+type CheckboxFieldItem = DefaultFiledItem & Pick<CheckboxFieldProps, 'options' | 'type'>;
 
-export type InitialValues = {
+type FieldItem = DefaultFiledItem | SelectFieldItem | NumberFieldItem | CheckboxFieldItem;
+
+export type CreateFormValues = {
     firstName: string;
     lastName: string;
-    age: number | undefined;
+    age: number;
     gender: UserGender | null;
-    interests: string;
+    interests: string[];
     city: string;
     email: string;
     password: string;
+    password2: string;
 };
 
 export const MIN_USER_AGE = 10;
 export const MAX_USER_AGE = 200;
 
-export const initialValues: InitialValues = {
+export const initialValues: CreateFormValues = {
     firstName: '',
     lastName: '',
-    age: undefined,
-    city: '',
+    age: 0,
+    city: 'Москва',
     email: '',
     gender: UserGender.Male,
-    interests: '',
+    interests: [],
     password: '',
+    password2: '',
 };
 export const fieldList: FieldItem[] = [
     {
