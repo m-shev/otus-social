@@ -22,3 +22,8 @@ export type CreateUserForm = Omit<User, 'id' | 'interests'> & {
     password: string;
     interests: string[];
 };
+
+export type LoginForm = {
+    login: string;
+    password: string;
+};

@@ -6,16 +6,9 @@ import {Field} from '../../components/Field';
 import {useCreateUser} from './hooks';
 import {useHistory} from 'react-router';
 
-export type RegistrationPageProps = Record<string, never>;
+const REDIRECT_DELAY = 2500;
 
-function getSetFieldProps(
-    fieldId: string,
-    setFieldValue: (field: string, value: any) => void,
-): (value: any) => void {
-    return (value: any) => {
-        setFieldValue(fieldId, value);
-    };
-}
+export type RegistrationPageProps = Record<string, never>;
 
 export const RegistrationPage: React.FC<RegistrationPageProps> = () => {
     const {onSubmit, isFetch, requestState, error} = useCreateUser();
@@ -30,7 +23,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = () => {
     if (requestState === 'success') {
         setTimeout(() => {
             pushHistory.push('/');
-        }, 2500);
+        }, REDIRECT_DELAY);
     }
 
     return (
@@ -47,7 +40,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = () => {
                                     key={field.id}
                                     {...field}
                                     {...formik.getFieldProps(field.id)}
-                                    setFieldValue={getSetFieldProps(field.id, formik.setFieldValue)}
+                                    setFieldValue={formik.setFieldValue}
                                 />
                             );
                         })}

@@ -1,21 +1,19 @@
-import {useCallback, useState} from 'react';
-import {CreateUserForm, HttpStatus, RequestState} from '../../../types';
+import {useCallback} from 'react';
+import {CreateUserForm, HttpStatus, IUseRequestState} from '../../../types';
 import {createUserPost} from '../../../api';
 import {CreateFormValues} from '../const';
 import {FormikHelpers} from 'formik/dist/types';
+import {useRequest} from '../../../hooks';
 
-export type UseCreateUser = {
-    isFetch: boolean;
-    requestState: RequestState;
-    error: Error | null;
+export interface IUseCreateUser extends IUseRequestState {
     onSubmit: (values: CreateFormValues, formikHelpers: FormikHelpers<CreateFormValues>) => void;
-};
+}
 
 const PASSWORDS_SHOULD_BE_EQUAL = 'Пароли должны совпадать';
 
 const mapValuesToForm = (values: CreateFormValues): CreateUserForm => {
     const {firstName, lastName, password2, gender, age, ...rest} = values;
-    console.log('dev -------->', rest);
+
     return {
         name: firstName,
         surname: lastName,
@@ -24,10 +22,8 @@ const mapValuesToForm = (values: CreateFormValues): CreateUserForm => {
     };
 };
 
-export const useCreateUser = (): UseCreateUser => {
-    const [isFetch, setIsFetch] = useState(false);
-    const [error, setError] = useState<Error | null>(null);
-    const [requestState, setRequestState] = useState<RequestState>(null);
+export const useCreateUser = (): IUseCreateUser => {
+    const {error, setError, isFetch, setIsFetch, setRequestState, requestState} = useRequest();
 
     const onSubmit = useCallback(
         async (
@@ -55,7 +51,7 @@ export const useCreateUser = (): UseCreateUser => {
             }
             setIsFetch(false);
         },
-        [],
+        [setError, setIsFetch, setRequestState],
     );
 
     return {

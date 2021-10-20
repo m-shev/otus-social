@@ -16,6 +16,11 @@ type CreateUserForm struct {
 	Interests []string
 }
 
+type AuthForm struct {
+	Password string
+	Login    string
+}
+
 type User struct {
 	Id        int        `json:"id"`
 	Name      string     `json:"name"`

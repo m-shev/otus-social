@@ -1,27 +1,6 @@
 import {UserGender} from '../../../types';
-import {
-    CheckboxFieldProps,
-    FieldProps,
-    FieldType,
-    NumberFieldProps,
-    SelectFieldProps,
-} from '../../../components/Field/types';
+import {FieldItem, FieldType} from '../../../components/Field/types';
 import {cityOptions, interestOptions} from './options';
-
-type DefaultFiledItem = Pick<FieldProps, 'title' | 'required' | 'type'> & {
-    id: keyof CreateFormValues;
-};
-
-type SelectFieldItem = DefaultFiledItem &
-    Pick<SelectFieldProps, 'options' | 'type'> & {
-        type: 'select';
-    };
-
-type NumberFieldItem = DefaultFiledItem & Pick<NumberFieldProps, 'min' | 'max' | 'type'>;
-
-type CheckboxFieldItem = DefaultFiledItem & Pick<CheckboxFieldProps, 'options' | 'type'>;
-
-type FieldItem = DefaultFiledItem | SelectFieldItem | NumberFieldItem | CheckboxFieldItem;
 
 export type CreateFormValues = {
     firstName: string;
@@ -49,7 +28,7 @@ export const initialValues: CreateFormValues = {
     password: '',
     password2: '',
 };
-export const fieldList: FieldItem[] = [
+export const fieldList: FieldItem<CreateFormValues>[] = [
     {
         id: 'firstName',
         title: 'Имя',

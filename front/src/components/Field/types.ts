@@ -11,9 +11,7 @@ export type FieldOption = {
     title: string;
 };
 
-export type CheckboxFieldOptions = FieldOption & {
-    id: string;
-};
+export type SetFieldValue = (field: string, value: any) => void;
 
 export type BaseFieldProps = FieldInputProps<
     string | ReadonlyArray<string> | number | undefined
@@ -23,7 +21,7 @@ export type BaseFieldProps = FieldInputProps<
     title: string;
     type: FieldType | string;
     required: boolean;
-    setFieldValue: (value: any) => void;
+    setFieldValue: SetFieldValue;
 };
 
 export type SelectFieldProps = BaseFieldProps & {
@@ -43,3 +41,24 @@ export type NumberFieldProps = BaseFieldProps & {
 };
 
 export type FieldProps = BaseFieldProps | SelectFieldProps | NumberFieldProps | CheckboxFieldProps;
+
+export type DefaultFiledItem<T> = Pick<FieldProps, 'title' | 'required' | 'type'> & {
+    id: keyof T;
+};
+
+export type SelectFieldItem<T> = DefaultFiledItem<T> &
+    Pick<SelectFieldProps, 'options' | 'type'> & {
+        type: 'select';
+    };
+
+export type NumberFieldItem<T> = DefaultFiledItem<T> &
+    Pick<NumberFieldProps, 'min' | 'max' | 'type'>;
+
+export type CheckboxFieldItem<T> = DefaultFiledItem<T> &
+    Pick<CheckboxFieldProps, 'options' | 'type'>;
+
+export type FieldItem<T> =
+    | DefaultFiledItem<T>
+    | SelectFieldItem<T>
+    | NumberFieldItem<T>
+    | CheckboxFieldItem<T>;

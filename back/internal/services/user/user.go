@@ -44,6 +44,15 @@ func (s *Service) FindUser(email string) (User, error) {
 }
 
 func hashUserPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	return string(bytes), err
+}
+
+func isHashEqual(hash string, password string) bool {
+	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
+	if err != nil {
+		return false
+	}
+
+	return true
 }
