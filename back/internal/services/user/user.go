@@ -43,6 +43,23 @@ func (s *Service) FindUser(email string) (User, error) {
 	return u, err
 }
 
+func (s *Service) GetProfileById(id int) (Profile, error) {
+	u, err := s.repository.GetById(id)
+
+	if err != nil {
+		return Profile{}, err
+	}
+
+	return Profile{
+		Id:        u.Id,
+		Name:      u.Name,
+		Surname:   u.Surname,
+		Age:       u.Age,
+		City:      u.City,
+		Interests: u.Interests,
+	}, nil
+}
+
 func hashUserPassword(password string) (string, error) {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 10)
 	return string(bytes), err

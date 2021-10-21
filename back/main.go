@@ -52,7 +52,7 @@ func makeRouter(conf config.Config, logger *log.Logger) *gin.Engine {
 	handler.POST("/user/registration", a.Registration)
 	handler.POST("/user/auth", a.Auth)
 	handler.GET("/user/logout", a.Logout)
-	handler.GET("/user/test", a.Test)
+	handler.GET("/user/:profileId/profile", a.Profile)
 
 	return handler
 }

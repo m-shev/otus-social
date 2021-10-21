@@ -1,10 +1,10 @@
-.dots {
-  width: 270px;
-}
-
-.linkWrapper {
+.root {
+  padding-top: 30px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+}
+.dots {
+  font-size: 50px;
 }

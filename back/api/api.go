@@ -2,7 +2,6 @@ package api
 
 import (
 	"errors"
-	"fmt"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 	"github.com/m-shev/otus-social/internal/config"
@@ -11,6 +10,7 @@ import (
 	"github.com/m-shev/otus-social/internal/services/user"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 type DefaultSession = func (c *gin.Context)sessions.Session
@@ -105,15 +105,23 @@ func (a *Api) Logout(c *gin.Context) {
 	c.Status(http.StatusNoContent)
 }
 
-func (a *Api) Test(c *gin.Context) {
-	session := a.defaultSession(c)
-	cookie, err := c.Request.Cookie("session")
-	some := c.Request.Cookies()
-	fmt.Println("Cookie", cookie, err, some)
-	id := session.Get("id")
+func (a *Api) Profile(c *gin.Context) {
+	profileId := c.Param("profileId")
+	id, err := strconv.ParseInt(profileId, 10, 32)
 
-	if userId, ok := id.(int); ok {
-		fmt.Println("userID", userId)
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		c.Abort()
+		return
 	}
 
+	profile, err := a.userService.GetProfileById(int(id))
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		c.Abort()
+		return
+	}
+
+	c.JSON(http.StatusOK, profile)
 }

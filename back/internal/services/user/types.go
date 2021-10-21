@@ -22,13 +22,17 @@ type AuthForm struct {
 }
 
 type User struct {
+	Profile
+	Email     string     `json:"email"`
+	Password  string     `json:"-"`
+}
+
+type Profile struct {
 	Id        int        `json:"id"`
 	Name      string     `json:"name"`
 	Surname   string     `json:"surname"`
 	Age       uint8      `json:"age"`
 	City      string     `json:"city"`
-	Email     string     `json:"email"`
-	Password  string     `json:"-"`
 	Interests []Interest `json:"interests"`
 }
 

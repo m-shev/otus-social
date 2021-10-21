@@ -19,3 +19,9 @@ export const loginPost = async (loginForm: LoginForm): Promise<Response> => {
         credentials: 'include',
     });
 };
+
+export const userProfileGet = async (id: string): Promise<Response> => {
+    return fetch(`${baseUrl()}/user/${id}/profile`, {
+        method: 'get',
+    });
+};

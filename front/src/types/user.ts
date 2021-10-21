@@ -18,6 +18,8 @@ export type User = {
     interests: Interest[];
 };
 
+export type UserProfile = Omit<User, 'email'>;
+
 export type CreateUserForm = Omit<User, 'id' | 'interests'> & {
     password: string;
     interests: string[];

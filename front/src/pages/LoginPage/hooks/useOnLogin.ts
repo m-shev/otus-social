@@ -1,7 +1,8 @@
-import {HttpStatus, IUseRequestState, LoginForm} from '../../types';
-import {useRequest} from '../../hooks';
-import {loginPost} from '../../api';
+import {HttpStatus, IUseRequestState, LoginForm} from '../../../types';
+import {useRequest} from '../../../hooks';
+import {loginPost} from '../../../api';
 import {useCallback} from 'react';
+import {userAuthEvent} from '../../../store/user';
 
 export interface IUseLogin extends IUseRequestState {
     onSubmit: (values: LoginForm) => void;
@@ -17,6 +18,7 @@ export const useOnLogin = (): IUseLogin => {
 
             if (resp.status === HttpStatus.Ok) {
                 setRequestState('success');
+                userAuthEvent(await resp.json());
             } else {
                 setRequestState('fail');
                 const errorText = await resp.text();
