@@ -2,7 +2,7 @@ package user
 
 func (s *Service) Auth(form AuthForm) (User, error)  {
 
-	u, err := s.repository.FindUser(form.Login)
+	u, err := s.repository.FindUserByEmail(form.Login)
 
 	if err != nil {
 		return User{}, ErrorUserNotFound

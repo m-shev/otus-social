@@ -51,8 +51,12 @@ func makeRouter(conf config.Config, logger *log.Logger) *gin.Engine {
 	// router
 	handler.POST("/user/registration", a.Registration)
 	handler.POST("/user/auth", a.Auth)
+	handler.POST("/user/friend", a.AddFriend)
+	handler.POST("/user/list", a.UserList)
 	handler.GET("/user/logout", a.Logout)
+	handler.GET("/user/profile", a.MyProfile)
 	handler.GET("/user/:profileId/profile", a.Profile)
+	handler.GET("/user/:profileId/friends", a.FriendList)
 
 	return handler
 }

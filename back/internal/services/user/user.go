@@ -38,9 +38,13 @@ func (s *Service) Create(form CreateUserForm) (User, error) {
 }
 
 func (s *Service) FindUser(email string) (User, error) {
-	u, err := s.repository.FindUser(email)
+	u, err := s.repository.FindUserByEmail(email)
 
 	return u, err
+}
+
+func (s *Service) FindUsers(form FindUsersForm) ([]Friend, error) {
+	return s.repository.FindUsers(form)
 }
 
 func (s *Service) GetProfileById(id int) (Profile, error) {
@@ -55,9 +59,23 @@ func (s *Service) GetProfileById(id int) (Profile, error) {
 		Name:      u.Name,
 		Surname:   u.Surname,
 		Age:       u.Age,
+		Gender:    u.Gender,
+		Avatar:    u.Avatar,
 		City:      u.City,
 		Interests: u.Interests,
 	}, nil
+}
+
+func (s *Service) AddFriend(form FriendForm) error {
+	return s.repository.AddFriend(form.UserId, form.FriendId)
+}
+
+func (s *Service) RemoveFriend(form FriendForm) error {
+	return s.repository.RemoveFriend(form.UserId, form.UserId)
+}
+
+func (s *Service) GetFriendList(userId, take, skip int) ([]Friend, int, error) {
+	return s.repository.GetFriendList(userId, skip, take)
 }
 
 func hashUserPassword(password string) (string, error) {

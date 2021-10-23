@@ -4,7 +4,7 @@ db:
   Port: "3306"
   Host: "0.0.0.0"
   DbName: "socialdb"
-  MaxOpenConnection: 10
+  MaxOpenConnection: 100
   MaxOpenIdleConnection: 10
   ConnMaxLifetime: 3
   MigrationPath: "./db/migrations"

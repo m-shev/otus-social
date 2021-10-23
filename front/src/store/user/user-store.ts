@@ -11,7 +11,12 @@ const defaultState: UserStore = {
 
 export const $userStore = createStore(defaultState);
 export const userAuthEvent = createEvent<User>();
+export const userLogoutEvent = createEvent();
 
 $userStore.on(userAuthEvent, (state, user) => {
     return {user};
+});
+
+$userStore.on(userLogoutEvent, (state, user) => {
+    return {user: null};
 });

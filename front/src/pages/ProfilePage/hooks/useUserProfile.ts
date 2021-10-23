@@ -3,9 +3,7 @@ import {useRequest} from '../../../hooks';
 import {useLocation} from 'react-router';
 import * as queryString from 'query-string';
 import {useEffect, useState} from 'react';
-import {userProfileGet} from '../../../api';
-import {useStore} from 'effector-react';
-import {$userStore} from '../../../store/user';
+import {friendListGet, profileGet} from '../../../api';
 
 interface ILoadProfile {
     (): Promise<void>;
@@ -24,16 +22,27 @@ const useLoadProfile = (
 ): ILoadProfile => {
     return async (): Promise<void> => {
         setIsFetch(true);
+        setRequestState(null);
 
         try {
-            const resp = await userProfileGet(id as string);
+            const resp = await profileGet(id as string);
+            let profile: UserProfile | null = null;
 
             if (resp.status === HttpStatus.Ok) {
-                setRequestState('success');
-                setUserProfile(await resp.json());
+                profile = await resp.json();
             } else {
                 setRequestState('fail');
-                setError(new Error(await resp.text()));
+                throw new Error(await resp.text());
+            }
+
+            const friendResp = await friendListGet(id as string);
+
+            if (profile && friendResp.status === HttpStatus.Ok) {
+                setRequestState('success');
+                profile.friends = (await friendResp.json()).friendList;
+                setUserProfile(profile);
+            } else {
+                throw new Error(await friendResp.text());
             }
         } catch (e) {
             setRequestState('fail');
@@ -46,7 +55,6 @@ const useLoadProfile = (
 
 export const useUserProfile = (): IUseUserProfile => {
     const {setIsFetch, setRequestState, setError, requestState, error, isFetch} = useRequest();
-    const {user} = useStore($userStore);
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
     const location = useLocation();
     const {id} = queryString.parse(location.search);
@@ -60,23 +68,10 @@ export const useUserProfile = (): IUseUserProfile => {
     );
 
     useEffect(() => {
-        setRequestState(null);
-        setError(null);
-        setUserProfile(null);
+        // noinspection JSIgnoredPromiseFromCall
+        loadProfile();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [id]);
-
-    useEffect(() => {
-        if (user && user.id === parseInt(id as string, 10)) {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const {email, ...rest} = user;
-            setUserProfile(rest);
-        } else {
-            // noinspection JSIgnoredPromiseFromCall
-            loadProfile();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [location]);
 
     return {
         error,

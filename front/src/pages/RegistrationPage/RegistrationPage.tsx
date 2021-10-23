@@ -5,6 +5,7 @@ import {fieldList, initialValues} from './const';
 import {Field} from '../../components/Field';
 import {useCreateUser} from './hooks';
 import {useHistory} from 'react-router';
+import {Header} from '../../components/Header';
 
 const REDIRECT_DELAY = 2500;
 
@@ -28,7 +29,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = () => {
 
     return (
         <div className={styles.root}>
-            <h1 className={styles.header}>Социальная сеть</h1>
+            <Header />
             <h2>Регистрация</h2>
             {requestState !== 'success' ? (
                 <form className={styles.form} onSubmit={formik.handleSubmit}>

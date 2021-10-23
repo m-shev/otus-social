@@ -1,5 +1,4 @@
-import * as React from 'react';
-import {ReactNode} from 'react';
+import React, {ReactNode} from 'react';
 import {DefaultLoader} from './DefaultLoader';
 
 export type Props = {

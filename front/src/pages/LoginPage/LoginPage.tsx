@@ -4,14 +4,16 @@ import {fieldList, initialValues} from './const';
 import {Field} from '../../components/Field';
 import {useOnLogin} from './hooks';
 import styles from './LoginPage.module.scss';
-import {useStore} from 'effector-react';
-import {$userStore} from '../../store/user';
+import {useRedirectToProfile} from '../../hooks';
+import {Header} from '../../components/Header';
+import {useHistory} from 'react-router';
 
 export type LoginPageProps = {};
 
 export const LoginPage: React.FC<LoginPageProps> = () => {
-    const {onSubmit, isFetch, requestState, error} = useOnLogin();
-    const {user} = useStore($userStore);
+    const {onSubmit, isFetch, error} = useOnLogin();
+    const history = useHistory();
+    useRedirectToProfile();
 
     const formik = useFormik({
         initialValues,
@@ -19,15 +21,18 @@ export const LoginPage: React.FC<LoginPageProps> = () => {
     });
 
     return (
-        <div>
-            <h1>Авторизация</h1>
+        <div className={styles.root}>
+            <Header showLoginButton={false} />
+            <h2>Авторизация</h2>
 
-            {error && (
-                <div className={styles.error}>{`Не удалось авторизоваться: ${error.message}`}</div>
-            )}
+            <div className={styles.content}>
+                {error && (
+                    <div
+                        className={styles.error}
+                    >{`Не удалось авторизоваться: ${error.message}`}</div>
+                )}
 
-            {requestState !== 'success' ? (
-                <form onSubmit={formik.handleSubmit}>
+                <form onSubmit={formik.handleSubmit} className={styles.form}>
                     <div className={styles.fields}>
                         {fieldList.map((field) => {
                             return (
@@ -45,10 +50,19 @@ export const LoginPage: React.FC<LoginPageProps> = () => {
                     <button type="submit" className={styles.submit} disabled={isFetch}>
                         {isFetch ? '...' : 'Войти'}
                     </button>
+
+                    {!isFetch && (
+                        <button
+                            onClick={() => {
+                                return history.push('/registration');
+                            }}
+                            className={styles.submit}
+                        >
+                            Зарегистрироваться
+                        </button>
+                    )}
                 </form>
-            ) : (
-                <span>{`Добро пожаловать ${user?.name}`}</span>
-            )}
+            </div>
         </div>
     );
 };

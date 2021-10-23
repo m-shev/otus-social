@@ -91,6 +91,25 @@ func (a *Api) Auth(c *gin.Context) {
 	c.JSON(http.StatusOK, u)
 }
 
+func (a *Api) MyProfile(c *gin.Context) {
+	userId := a.getUserIdFromSession(c)
+
+	if userId == 0 {
+		c.Status(http.StatusUnauthorized)
+		return
+	}
+
+	u, err := a.userService.GetProfileById(userId)
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		c.Abort()
+		return
+	}
+
+	c.JSON(http.StatusOK, u)
+}
+
 func (a *Api) Logout(c *gin.Context) {
 	session := a.defaultSession(c)
 	session.Clear()
@@ -124,4 +143,111 @@ func (a *Api) Profile(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, profile)
+}
+
+func (a *Api) AddFriend(c *gin.Context) {
+	var addForm user.FriendForm
+	err := c.BindJSON(&addForm)
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		c.Abort()
+		return
+	}
+
+	userId := a.getUserIdFromSession(c)
+
+	if userId != addForm.UserId {
+		 c.String(http.StatusUnauthorized, "you must be logged in to add friends")
+		 c.Abort()
+		return
+	}
+
+	err = a.userService.AddFriend(addForm)
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		c.Abort()
+		return
+	}
+
+	c.Status(http.StatusOK)
+}
+
+func (a *Api) FriendList(c *gin.Context) {
+	userId, skip, take, err := convFriendListParam(c)
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		c.Abort()
+		return
+	}
+
+	friendList, total, err := a.userService.GetFriendList(userId, take, skip)
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		c.Abort()
+		return
+	}
+	resp := friendListResponse{
+		FriendList: friendList,
+		Total:      total,
+	}
+
+	c.JSON(http.StatusOK, resp)
+}
+
+func (a *Api) UserList(c *gin.Context) {
+	var form user.FindUsersForm
+	err := c.BindJSON(&form)
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		c.Abort()
+		return
+	}
+
+	friendList, err := a.userService.FindUsers(form)
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		c.Abort()
+		return
+	}
+
+	c.JSON(http.StatusOK, friendList)
+}
+
+func convFriendListParam(c *gin.Context) (userId, skip, take int, err error) {
+	userId, err = strconv.Atoi(c.Param("profileId"))
+
+	if err != nil {
+		return 0, 0, 0, err
+	}
+
+	skip, err = strconv.Atoi(c.Query("skip"))
+
+	if err != nil {
+		return 0, 0, 0, err
+	}
+
+	take, err = strconv.Atoi(c.Query("take"))
+
+	if err != nil {
+		return 0, 0, 0, err
+	}
+
+	return
+}
+
+func (a *Api) getUserIdFromSession(c *gin.Context) int {
+	session := a.defaultSession(c)
+	userId := session.Get("id")
+
+	if userId != nil {
+		return userId.(int)
+	}
+
+	return 0
 }

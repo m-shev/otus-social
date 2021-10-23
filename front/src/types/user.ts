@@ -1,6 +1,6 @@
 export enum UserGender {
-    Male = 'Male',
-    Female = 'Female',
+    Male = 'male',
+    Female = 'female',
 }
 
 export type Interest = {
@@ -12,13 +12,17 @@ export type User = {
     id: number;
     name: string;
     surname: string;
+    avatar: string;
     age: number;
+    gender: UserGender;
     city: string;
     email: string;
     interests: Interest[];
 };
 
-export type UserProfile = Omit<User, 'email'>;
+export type UserProfile = Omit<User, 'email'> & {
+    friends: UserFriend[];
+};
 
 export type CreateUserForm = Omit<User, 'id' | 'interests'> & {
     password: string;
@@ -29,3 +33,10 @@ export type LoginForm = {
     login: string;
     password: string;
 };
+
+export type AddFriendForm = {
+    userId: number;
+    friendId: number;
+};
+
+export type UserFriend = Pick<User, 'id' | 'avatar' | 'name' | 'surname'>;
