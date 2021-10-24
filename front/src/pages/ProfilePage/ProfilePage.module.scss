@@ -7,10 +7,11 @@
 }
 
 .user {
+  width: 400px;
   display: flex;
   flex-direction: row;
-  align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  align-items: flex-start;
 }
 
 .img {
@@ -33,3 +34,14 @@
   margin-bottom: 10px;
 }
 
+.friend {
+  margin-bottom: 20px;
+}
+
+.friendList {
+  width: 400px;
+}
+
+.link {
+  margin-bottom: 20px;
+}

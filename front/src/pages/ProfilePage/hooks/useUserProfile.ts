@@ -5,12 +5,13 @@ import * as queryString from 'query-string';
 import {useEffect, useState} from 'react';
 import {friendListGet, profileGet} from '../../../api';
 
-interface ILoadProfile {
+export interface ILoadProfile {
     (): Promise<void>;
 }
 
 export interface IUseUserProfile extends IUseRequestState {
     userProfile: UserProfile | null;
+    loadProfile: ILoadProfile;
 }
 
 const useLoadProfile = (
@@ -78,5 +79,6 @@ export const useUserProfile = (): IUseUserProfile => {
         isFetch,
         userProfile,
         requestState,
+        loadProfile,
     };
 };

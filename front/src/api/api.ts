@@ -1,4 +1,4 @@
-import {AddFriendForm, CreateUserForm, LoginForm} from '../types';
+import {CreateUserForm, FindUserForm, FriendForm, LoginForm} from '../types';
 
 const baseUrl = (): string => {
     return 'http://localhost:3005';
@@ -40,7 +40,7 @@ export const logoutGet = async (): Promise<Response> => {
     });
 };
 
-export const addFriendPost = async (addFriendForm: AddFriendForm): Promise<Response> => {
+export const addFriendPost = async (addFriendForm: FriendForm): Promise<Response> => {
     return fetch(`${baseUrl()}/user/friend`, {
         method: 'post',
         body: JSON.stringify(addFriendForm),
@@ -48,8 +48,23 @@ export const addFriendPost = async (addFriendForm: AddFriendForm): Promise<Respo
     });
 };
 
+export const removeFriendDelete = async (removeFriendForm: FriendForm): Promise<Response> => {
+    return fetch(`${baseUrl()}/user/friend`, {
+        method: 'delete',
+        body: JSON.stringify(removeFriendForm),
+        credentials: 'include',
+    });
+};
+
 export const friendListGet = async (userId: string): Promise<Response> => {
     return fetch(`${baseUrl()}/user/${userId}/friends?skip=0&take=1000`, {
         method: 'get',
+    });
+};
+
+export const userListPost = async (findUserForm: FindUserForm): Promise<Response> => {
+    return fetch(`${baseUrl()}/user/list`, {
+        method: 'post',
+        body: JSON.stringify(findUserForm),
     });
 };

@@ -40,6 +40,7 @@ func makeRouter(conf config.Config, logger *log.Logger) *gin.Engine {
 		AllowAllOrigins:  false,
 		AllowOrigins:     []string{"http://localhost:3000"},
 		AllowCredentials: true,
+		AllowMethods: []string{"GET", "POST", "DELETE"},
 	}))
 
 	//TODO secret to config
@@ -52,6 +53,7 @@ func makeRouter(conf config.Config, logger *log.Logger) *gin.Engine {
 	handler.POST("/user/registration", a.Registration)
 	handler.POST("/user/auth", a.Auth)
 	handler.POST("/user/friend", a.AddFriend)
+	handler.DELETE("/user/friend", a.RemoveFriend)
 	handler.POST("/user/list", a.UserList)
 	handler.GET("/user/logout", a.Logout)
 	handler.GET("/user/profile", a.MyProfile)

@@ -3,12 +3,12 @@ import styles from './Field.module.scss';
 import {FieldProps, FieldType} from './types';
 import {SpecificField} from './SpecificField';
 
-const renderCommonLabel = (props: FieldProps) => {
+const renderCommonLabel = (props: Omit<FieldProps, 'setFieldValue'>) => {
     return props.type !== FieldType.Checkbox;
 };
 
 export const Field: React.FC<FieldProps> = (props) => {
-    const {error, ...restProps} = props;
+    const {error, setFieldValue, ...restProps} = props;
 
     return (
         <div className={styles.root}>
@@ -18,7 +18,7 @@ export const Field: React.FC<FieldProps> = (props) => {
                 </label>
             )}
 
-            <SpecificField {...restProps} />
+            <SpecificField {...restProps} setFieldValue={setFieldValue} />
             {error && <span className={styles.error}>{error}</span>}
         </div>
     );

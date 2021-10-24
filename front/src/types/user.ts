@@ -34,9 +34,16 @@ export type LoginForm = {
     password: string;
 };
 
-export type AddFriendForm = {
+export type FriendForm = {
     userId: number;
     friendId: number;
+};
+
+export type FindUserForm = {
+    name?: string;
+    surname?: string;
+    skip: number;
+    take: number;
 };
 
 export type UserFriend = Pick<User, 'id' | 'avatar' | 'name' | 'surname'>;

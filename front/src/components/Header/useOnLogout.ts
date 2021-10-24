@@ -2,13 +2,13 @@ import {logoutGet} from '../../api';
 import {useCallback} from 'react';
 import {userLogoutEvent} from '../../store/user';
 import {useHistory} from 'react-router';
-import {UserProfile} from '../../types';
+import {User} from '../../types';
 
 export interface IUseLogout {
     onLogout: () => Promise<void>;
 }
 
-export const useOnLogout = (user: UserProfile | null): IUseLogout => {
+export const useOnLogout = (user: User | null): IUseLogout => {
     const history = useHistory();
 
     const onLogout = useCallback(async () => {

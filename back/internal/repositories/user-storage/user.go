@@ -92,10 +92,6 @@ func (r *Repository) FindUserByEmail(email string) (user.User, error) {
 	return u, nil
 }
 
-
-
-
-
 func (r *Repository) getUserInterests(userId int) ([]user.Interest, error) {
 	query := `select interest.id, interest.name from interest left join user_interest on interestId=id
 				where userId=?`

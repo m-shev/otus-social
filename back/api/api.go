@@ -174,6 +174,35 @@ func (a *Api) AddFriend(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
+func (a *Api) RemoveFriend(c *gin.Context) {
+	var removeFriend user.FriendForm
+	err := c.BindJSON(&removeFriend)
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		c.Abort()
+		return
+	}
+
+	userId := a.getUserIdFromSession(c)
+
+	if userId != removeFriend.UserId {
+		c.String(http.StatusUnauthorized, "you must be logged in to add friends")
+		c.Abort()
+		return
+	}
+
+	err = a.userService.RemoveFriend(removeFriend)
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		c.Abort()
+		return
+	}
+
+	c.Status(http.StatusOK)
+}
+
 func (a *Api) FriendList(c *gin.Context) {
 	userId, skip, take, err := convFriendListParam(c)
 

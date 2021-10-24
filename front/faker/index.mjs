@@ -4,7 +4,7 @@ import faker from 'faker/locale/ru.js';
 import fetch from 'node-fetch';
 import avatars from './avatars.js'
 
-const LOOKUP = 200;
+const LOOKUP = 1000;
 
 const options = ['музыка', 'фильмы', 'спорт', 'компьютерные игры', 'путешествия'];
 

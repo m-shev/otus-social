@@ -6,7 +6,7 @@ import (
 	"github.com/m-shev/otus-social/internal/services/user"
 )
 
-const selectStr = "select user.id, user.avatar, user.name, user.surname from user"
+const selectStr = "select user.id, user.name, user.surname, user.avatar from user"
 
 func (r *Repository) FindUsers(form user.FindUsersForm) ([]user.Friend, error) {
 	var err error
@@ -124,5 +124,5 @@ func scanFriend(rows *sql.Rows, friend *user.Friend) error {
 }
 
 func addOrder(query string) string {
-	return query + " order by id limit ?, ?"
+	return query + " order by id DESC limit ?, ?"
 }

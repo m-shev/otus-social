@@ -12,7 +12,7 @@ export const MainPage: React.FC<MainPageProps> = () => {
     return (
         <>
             <div className={styles.root}>
-                <Header />
+                <Header showLoginButton={false} />
 
                 <div className={styles.linkWrapper}>
                     <Link to="/login">Войти</Link>

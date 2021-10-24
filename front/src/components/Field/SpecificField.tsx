@@ -37,5 +37,8 @@ export const SpecificField: React.FC<SpecificFieldProps> = (props) => {
         return <CheckboxGroup {...props} />;
     }
 
-    return <input className={styles.field} {...props} />;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const {setFieldValue, ...rest} = props;
+
+    return <input className={styles.field} {...rest} />;
 };

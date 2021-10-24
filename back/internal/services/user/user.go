@@ -71,7 +71,7 @@ func (s *Service) AddFriend(form FriendForm) error {
 }
 
 func (s *Service) RemoveFriend(form FriendForm) error {
-	return s.repository.RemoveFriend(form.UserId, form.UserId)
+	return s.repository.RemoveFriend(form.UserId, form.FriendId)
 }
 
 func (s *Service) GetFriendList(userId, take, skip int) ([]Friend, int, error) {
