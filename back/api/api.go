@@ -13,7 +13,7 @@ import (
 	"strconv"
 )
 
-type DefaultSession = func (c *gin.Context)sessions.Session
+type DefaultSession = func(c *gin.Context) sessions.Session
 
 type Api struct {
 	userService    *user.Service
@@ -48,6 +48,14 @@ func (a *Api) Registration(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, u)
+}
+
+type MeetingService interface {
+	CreateTask()
+}
+
+type CallService interface {
+	CreateTask()
 }
 
 func (a *Api) Auth(c *gin.Context) {
@@ -158,8 +166,8 @@ func (a *Api) AddFriend(c *gin.Context) {
 	userId := a.getUserIdFromSession(c)
 
 	if userId != addForm.UserId {
-		 c.String(http.StatusUnauthorized, "you must be logged in to add friends")
-		 c.Abort()
+		c.String(http.StatusUnauthorized, "you must be logged in to add friends")
+		c.Abort()
 		return
 	}
 

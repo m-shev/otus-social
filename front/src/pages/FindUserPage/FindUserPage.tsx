@@ -8,15 +8,15 @@ import {LoadableContent, SmallDots} from '../../components/LoadableContent';
 import {useLastUserList, useOnFind} from './hooks';
 import {FriendList} from '../../components/FriendList';
 
-export type FindUserPageProps = {};
-
-export const FindUserPage: React.FC<FindUserPageProps> = () => {
+export const FindUserPage: React.FC = () => {
     const userList = useLastUserList();
-    const {findList, isFetch} = useOnFind();
+    const {findList, isFetch, onSubmit, firstSearchFlag} = useOnFind();
     const formik = useFormik({
         initialValues,
-        onSubmit: () => {},
+        onSubmit,
     });
+
+    const searchText = findList.length ? 'Посмотрите кого мы нашли' : 'Упс, мы никого не нашли';
 
     return (
         <div className={styles.root}>
@@ -44,7 +44,7 @@ export const FindUserPage: React.FC<FindUserPageProps> = () => {
                 </LoadableContent>
             </form>
 
-            {userList.length && (
+            {!firstSearchFlag && (
                 <>
                     <div className={styles.text}>Недавно зарегистрировались</div>
 
@@ -54,9 +54,13 @@ export const FindUserPage: React.FC<FindUserPageProps> = () => {
                 </>
             )}
 
-            {findList.length && (
+            {firstSearchFlag && (
                 <>
-                    <div className={styles.text}>Посмотрите, кого мы нашли</div>
+                    <div className={styles.text}>{searchText}</div>
+
+                    <div className={styles.friendList}>
+                        <FriendList list={findList} />
+                    </div>
                 </>
             )}
         </div>

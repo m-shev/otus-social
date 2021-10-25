@@ -14,6 +14,7 @@ export interface IUseCreateUser extends IUseRequestState {
 const PASSWORDS_SHOULD_BE_EQUAL = 'Пароли должны совпадать';
 
 const mapValuesToForm = (values: CreateFormValues): CreateUserForm => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const {firstName, lastName, password2, age, gender, ...rest} = values;
 
     return {

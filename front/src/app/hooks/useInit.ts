@@ -4,10 +4,10 @@ import {HttpStatus} from '../../types';
 import {userAuthEvent} from '../../store/user';
 
 export type IUseInit = {
-    isPending: boolean;
+    pending: boolean;
 };
 
-export const useInit = () => {
+export const useInit = (): IUseInit => {
     const [pending, setPending] = useState(true);
     const loadUserProfile = useCallback(async () => {
         try {
@@ -26,6 +26,7 @@ export const useInit = () => {
     useEffect(() => {
         // noinspection JSIgnoredPromiseFromCall
         loadUserProfile();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     return {

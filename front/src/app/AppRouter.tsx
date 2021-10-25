@@ -3,12 +3,10 @@ import {BrowserRouter, Route, Switch} from 'react-router-dom';
 import {RegistrationPage} from '../pages/RegistrationPage';
 import {MainPage} from '../pages/MainPage';
 import {LoginPage} from '../pages/LoginPage';
-import {ProfilePage} from '../pages/ProfilePage/ProfilePage';
+import {ProfilePage} from '../pages/ProfilePage';
 import {FindUserPage} from '../pages/FindUserPage';
 
-export type RouterProps = {};
-
-export const AppRouter: React.FC<RouterProps> = () => {
+export const AppRouter: React.FC = () => {
     return (
         <BrowserRouter>
             <Switch>

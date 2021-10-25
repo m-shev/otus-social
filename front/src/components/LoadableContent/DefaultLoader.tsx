@@ -2,9 +2,7 @@ import * as React from 'react';
 import {useDots} from './useDots';
 import styles from './styles.module.scss';
 
-export type DefaultLoaderProps = {};
-
-export const DefaultLoader: React.FC<DefaultLoaderProps> = () => {
+export const DefaultLoader: React.FC = () => {
     const dots = useDots();
     return (
         <div className={styles.root}>

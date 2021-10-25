@@ -5,7 +5,7 @@ export const useOnCheckboxChange = (
     setFieldValue: SetFieldValue,
     fieldId: string,
     value: unknown,
-) => {
+): ((e: SyntheticEvent<HTMLInputElement>) => void) => {
     return useCallback(
         (e: SyntheticEvent<HTMLInputElement>) => {
             const newValue = Array.isArray(value) ? [...value] : [];

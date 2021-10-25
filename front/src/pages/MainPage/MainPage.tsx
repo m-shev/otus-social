@@ -4,9 +4,7 @@ import styles from './MainPage.module.scss';
 import {Header} from '../../components/Header';
 import {useRedirectToProfile} from '../../hooks';
 
-export type MainPageProps = {};
-
-export const MainPage: React.FC<MainPageProps> = () => {
+export const MainPage: React.FC = () => {
     useRedirectToProfile();
 
     return (

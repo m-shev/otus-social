@@ -9,11 +9,13 @@ const DEFAULT_TAKE = 500;
 export interface IUseOnFind extends IUseRequestState {
     findList: UserFriend[];
     onSubmit: (values: FindForm) => Promise<void>;
+    firstSearchFlag: boolean;
 }
 
 export const useOnFind = (): IUseOnFind => {
     const {setIsFetch, setRequestState, setError, error, requestState, isFetch} = useRequest();
     const [findList, setFindList] = useState([]);
+    const [firstSearchFlag, setFlag] = useState(false);
 
     const onSubmit = useCallback(
         async (values: FindForm) => {
@@ -28,6 +30,7 @@ export const useOnFind = (): IUseOnFind => {
                 });
 
                 if (resp.status === HttpStatus.Ok) {
+                    setFlag(true);
                     setRequestState('success');
                     setFindList(await resp.json());
                 } else {
@@ -49,5 +52,6 @@ export const useOnFind = (): IUseOnFind => {
         error,
         requestState,
         isFetch,
+        firstSearchFlag,
     };
 };

@@ -20,11 +20,8 @@ var configFiles = map[string]string{
 }
 
 const (
-	prefix            = "SOCIAL"
+	prefix            = "social"
 	envVar            = "env"
-	cacheSizeVar      = "CACHE_SIZE"
-	cachePathVar      = "CACHE_PATH"
-	fileFolder        = "FILE_FOLDER"
 	defaultConfig     = "default"
 	defaultConfigPath = "./config"
 )

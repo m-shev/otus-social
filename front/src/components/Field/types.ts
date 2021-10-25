@@ -11,7 +11,7 @@ export type FieldOption = {
     title: string;
 };
 
-export type SetFieldValue = (field: string, value: any) => void;
+export type SetFieldValue = (field: string, value: unknown) => void;
 
 export type BaseFieldProps = FieldInputProps<
     string | ReadonlyArray<string> | number | undefined

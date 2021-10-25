@@ -8,9 +8,7 @@ import {ReferenceAction} from './ReferenceAction';
 import {FriendList} from '../../components/FriendList';
 import {Link} from 'react-router-dom';
 
-export type UserPageProps = {};
-
-export const ProfilePage: React.FC<UserPageProps> = () => {
+export const ProfilePage: React.FC = () => {
     const {userProfile, isFetch, loadProfile} = useUserProfile();
     const isCurrentUser = useIsCurrentUser(userProfile);
     const interests = useInterests(userProfile?.interests || []);

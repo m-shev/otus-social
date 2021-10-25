@@ -2,7 +2,7 @@ db:
   Password: "alsdgkjsadf"
   User: "social"
   Port: "3306"
-  Host: "0.0.0.0"
+  Host: "db"
   DbName: "socialdb"
   MaxOpenConnection: 100
   MaxOpenIdleConnection: 100

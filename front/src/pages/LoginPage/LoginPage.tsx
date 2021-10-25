@@ -8,9 +8,7 @@ import {useRedirectToProfile} from '../../hooks';
 import {Header} from '../../components/Header';
 import {useHistory} from 'react-router';
 
-export type LoginPageProps = {};
-
-export const LoginPage: React.FC<LoginPageProps> = () => {
+export const LoginPage: React.FC = () => {
     const {onSubmit, isFetch, error} = useOnLogin();
     const history = useHistory();
     useRedirectToProfile();

@@ -1,0 +1,15 @@
+version: "3.8"
+services:
+  nginx:
+    container_name: sigma-nginx
+    image: sigma-nginx
+    volumes:
+      - sigma-letsencrypt:/etc/letsencrypt
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+
+volumes:
+  sigma-letsencrypt:
+    name: sigma-letsencrypt

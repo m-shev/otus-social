@@ -1,0 +1,42 @@
+version: "3.8"
+services:
+  nginx:
+    container_name: sigma-nginx
+    image: sigma-nginx
+    volumes:
+      - sigma-letsencrypt:/etc/letsencrypt
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+    networks:
+      - sigma_net
+
+  back:
+    container_name: social
+    image: sigma-social
+    networks:
+      - sigma_net
+    environment:
+      SOCIAL_ENV: "PROD"
+    restart: always
+
+  db:
+    container_name: db
+    image: sigma-social-db
+    volumes:
+      - social-db-data:/var/lib/mysql
+    networks:
+      - sigma_net
+    restart: always
+
+volumes:
+  sigma-letsencrypt:
+    name: sigma-letsencrypt
+  social-db-data:
+      name: social-db-data
+
+networks:
+  sigma_net:
+    name: sigma_net
+    external: true

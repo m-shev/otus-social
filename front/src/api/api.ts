@@ -1,7 +1,9 @@
 import {CreateUserForm, FindUserForm, FriendForm, LoginForm} from '../types';
 
 const baseUrl = (): string => {
-    return 'http://localhost:3005';
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    return process.env.REACT_APP_BASE_URL;
 };
 
 export const createUserPost = async (createUserForm: CreateUserForm): Promise<Response> => {

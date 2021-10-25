@@ -17,6 +17,6 @@ $userStore.on(userAuthEvent, (state, user) => {
     return {user};
 });
 
-$userStore.on(userLogoutEvent, (state, user) => {
+$userStore.on(userLogoutEvent, () => {
     return {user: null};
 });

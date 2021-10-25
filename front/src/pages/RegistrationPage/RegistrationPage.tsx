@@ -31,6 +31,7 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = () => {
         <div className={styles.root}>
             <Header />
             <h2>Регистрация</h2>
+
             {requestState !== 'success' ? (
                 <form className={styles.form} onSubmit={formik.handleSubmit}>
                     <div className={styles.fields}>
@@ -45,6 +46,8 @@ export const RegistrationPage: React.FC<RegistrationPageProps> = () => {
                                 />
                             );
                         })}
+
+                        {error && <div className={styles.error}>{error.message}</div>}
                     </div>
 
                     <button type="submit" className={styles.submit} disabled={isFetch}>
