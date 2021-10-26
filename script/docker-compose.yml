@@ -39,4 +39,3 @@ volumes:
 networks:
   sigma_net:
     name: sigma_net
-    external: true
