@@ -61,7 +61,7 @@ const generate = async () => {
         };
 
         // console.log(user);
-        const resp = await fetch('http://localhost:3005/user/registration', {
+        const resp = await fetch('https://mshev.ru/user/registration', {
             method: 'post',
             body: JSON.stringify(user),
             headers: {'Content-Type': 'application/json'},

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
@@ -10,19 +11,29 @@ import (
 	"github.com/m-shev/otus-social/internal/migration"
 	"log"
 	"net/http"
+	"time"
 )
 
 func main() {
-	logger := log.Default()
 	conf := config.GetConfig()
+
+	time.Sleep(conf.Server.StartDelay * time.Second)
+	logger := log.Default()
+
+
+
 	m := migration.NewManager(conf.Db, logger)
 	m.Up()
 
 	router := makeRouter(conf, logger)
+	addr :=  fmt.Sprintf("%s:%s", conf.Server.Host, conf.Server.Port)
+
 	server := &http.Server{
-		Addr:    "0.0.0.0:3005",
+		Addr:    addr,
 		Handler: router,
 	}
+
+	logger.Printf("server start at %s", addr)
 
 	if err := server.ListenAndServe(); err != nil {
 		logger.Print("server start error: ", err)
@@ -38,15 +49,13 @@ func makeRouter(conf config.Config, logger *log.Logger) *gin.Engine {
 
 	handler.Use(cors.New(cors.Config{
 		AllowAllOrigins:  false,
-		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost"},
 		AllowCredentials: true,
 		AllowMethods: []string{"GET", "POST", "DELETE"},
 	}))
 
-	//TODO secret to config
-	store := cookie.NewStore([]byte("xxxx123"))
+	store := cookie.NewStore([]byte("IRdjDm"))
 
-	//TODO session name to config
 	handler.Use(sessions.Sessions("session", store))
 
 	// router

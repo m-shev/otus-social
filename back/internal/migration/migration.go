@@ -22,7 +22,12 @@ func NewManager(conf config.Db, logger *log.Logger) *Manager {
 
 func (manager *Manager) Up() {
 	defer recovery()
-	manager.handleMigrationErr(manager.create().Up())
+	if err := manager.create().Up(); err != nil {
+		manager.handleMigrationErr(err)
+	} else {
+		manager.Logger.Println("Migration executed success")
+	}
+
 	manager.close()
 }
 

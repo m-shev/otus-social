@@ -44,5 +44,6 @@ func (c *Connector) GetConnection() *sql.DB {
 }
 
 func (c *Connector) dbUrl() string {
-	return fmt.Sprintf("%s:%s@/%s", c.conf.User, c.conf.Password, c.conf.DbName)
+	return fmt.Sprintf("%s:%s@tcp(%s:%s)/%s",
+		c.conf.User, c.conf.Password, c.conf.Host, c.conf.Port, c.conf.DbName)
 }

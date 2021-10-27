@@ -19,6 +19,9 @@ services:
       - sigma_net
     environment:
       SOCIAL_ENV: "PROD"
+      GIN_MODE: "release"
+    depends_on:
+    - db
     restart: always
 
   db:
@@ -28,6 +31,8 @@ services:
       - social-db-data:/var/lib/mysql
     networks:
       - sigma_net
+    ports:
+    - "3306:3306"
     restart: always
 
 volumes:
