@@ -2,6 +2,10 @@ server:
   StartDelay: 0
   Host: "0.0.0.0"
   Port: "3005"
+Protection:
+  AllowOrigins:
+    - "http://localhost:3000"
+    - "http://localhost"
 db:
   Password: "alsdgkjsadf"
   User: "social"

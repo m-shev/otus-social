@@ -5,6 +5,7 @@ import "time"
 type Config struct {
 	Db
 	Server
+	Protection
 	isRead bool
 	env    string
 }
@@ -25,4 +26,8 @@ type Server struct {
 	StartDelay time.Duration
 	Host       string
 	Port       string
+}
+
+type Protection struct {
+	AllowOrigins []string
 }

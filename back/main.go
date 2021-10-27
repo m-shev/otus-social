@@ -20,8 +20,6 @@ func main() {
 	time.Sleep(conf.Server.StartDelay * time.Second)
 	logger := log.Default()
 
-
-
 	m := migration.NewManager(conf.Db, logger)
 	m.Up()
 
@@ -49,7 +47,7 @@ func makeRouter(conf config.Config, logger *log.Logger) *gin.Engine {
 
 	handler.Use(cors.New(cors.Config{
 		AllowAllOrigins:  false,
-		AllowOrigins:     []string{"http://localhost:3000", "http://localhost"},
+		AllowOrigins:     conf.AllowOrigins,
 		AllowCredentials: true,
 		AllowMethods: []string{"GET", "POST", "DELETE"},
 	}))

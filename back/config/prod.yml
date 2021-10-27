@@ -2,6 +2,9 @@ server:
   StartDelay: 5
   Host: "0.0.0.0"
   Port: "3005"
+Protection:
+  AllowOrigins:
+    - "https://mshev.ru"
 db:
   Password: "alsdgkjsadf"
   User: "social"
