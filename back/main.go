@@ -24,7 +24,7 @@ func main() {
 	m.Up()
 
 	router := makeRouter(conf, logger)
-	addr :=  fmt.Sprintf("%s:%s", conf.Server.Host, conf.Server.Port)
+	addr := fmt.Sprintf("%s:%s", conf.Server.Host, conf.Server.Port)
 
 	server := &http.Server{
 		Addr:    addr,
@@ -49,7 +49,7 @@ func makeRouter(conf config.Config, logger *log.Logger) *gin.Engine {
 		AllowAllOrigins:  false,
 		AllowOrigins:     conf.AllowOrigins,
 		AllowCredentials: true,
-		AllowMethods: []string{"GET", "POST", "DELETE"},
+		AllowMethods:     []string{"GET", "POST", "DELETE"},
 	}))
 
 	store := cookie.NewStore([]byte("IRdjDm"))
@@ -58,10 +58,11 @@ func makeRouter(conf config.Config, logger *log.Logger) *gin.Engine {
 
 	// router
 	handler.POST("/user/registration", a.Registration)
+	handler.POST("user/registrations", a.ListRegistration)
 	handler.POST("/user/auth", a.Auth)
 	handler.POST("/user/friend", a.AddFriend)
 	handler.DELETE("/user/friend", a.RemoveFriend)
-	handler.POST("/user/list", a.UserList)
+	handler.GET("/user/list", a.UserList)
 	handler.GET("/user/logout", a.Logout)
 	handler.GET("/user/profile", a.MyProfile)
 	handler.GET("/user/:profileId/profile", a.Profile)

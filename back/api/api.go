@@ -50,6 +50,27 @@ func (a *Api) Registration(c *gin.Context) {
 	c.JSON(http.StatusOK, u)
 }
 
+func (a *Api) ListRegistration(c *gin.Context) {
+	var forms []user.CreateUserForm
+	err := c.BindJSON(&forms)
+
+	if err != nil {
+		c.String(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	for _, v := range forms {
+		_, err := a.userService.Create(v)
+
+		if err != nil {
+			c.String(http.StatusBadRequest, err.Error())
+			return
+		}
+	}
+
+	c.Status(http.StatusOK)
+}
+
 type MeetingService interface {
 	CreateTask()
 }
@@ -236,8 +257,14 @@ func (a *Api) FriendList(c *gin.Context) {
 }
 
 func (a *Api) UserList(c *gin.Context) {
-	var form user.FindUsersForm
-	err := c.BindJSON(&form)
+	name, surname, skip, take, err := convUserListParam(c)
+
+	form := user.FindUsersForm{
+		Name:    name,
+		Surname: surname,
+		Skip:    skip,
+		Take:    take,
+	}
 
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
@@ -260,22 +287,32 @@ func convFriendListParam(c *gin.Context) (userId, skip, take int, err error) {
 	userId, err = strconv.Atoi(c.Param("profileId"))
 
 	if err != nil {
-		return 0, 0, 0, err
+		return
 	}
 
+	skip, take, err = convPaginationParams(c)
+
+	return
+}
+
+func convUserListParam(c *gin.Context) (name, surname string, skip, take int, err error) {
+	skip, take, err = convPaginationParams(c)
+	name = c.Query("name")
+	surname = c.Query("surname")
+
+	return
+}
+
+func convPaginationParams(c *gin.Context) (skip, take int, err error) {
 	skip, err = strconv.Atoi(c.Query("skip"))
 
 	if err != nil {
-		return 0, 0, 0, err
+		return 0, 0, err
 	}
 
 	take, err = strconv.Atoi(c.Query("take"))
 
-	if err != nil {
-		return 0, 0, 0, err
-	}
-
-	return
+	return skip, take, err
 }
 
 func (a *Api) getUserIdFromSession(c *gin.Context) int {

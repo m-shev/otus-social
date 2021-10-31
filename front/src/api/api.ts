@@ -1,4 +1,5 @@
 import {CreateUserForm, FindUserForm, FriendForm, LoginForm} from '../types';
+import * as queryString from 'query-string';
 
 const baseUrl = (): string => {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -64,9 +65,9 @@ export const friendListGet = async (userId: string): Promise<Response> => {
     });
 };
 
-export const userListPost = async (findUserForm: FindUserForm): Promise<Response> => {
-    return fetch(`${baseUrl()}/user/list`, {
-        method: 'post',
-        body: JSON.stringify(findUserForm),
+export const userListGet = async (findUserForm: FindUserForm): Promise<Response> => {
+    const query = queryString.stringify(findUserForm);
+    return fetch(`${baseUrl()}/user/list?${query}`, {
+        method: 'get'
     });
 };
