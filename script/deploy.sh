@@ -14,4 +14,4 @@ ssh -p 5544 $server docker load -i $imagesPath/sigma-social.tar
 ssh -p 5544 $server docker load -i $imagesPath/sigma-social-db.tar
 
 
-ssh -p 5544 $server docker-compose up
+ssh -p 5544 $server docker-compose up -d

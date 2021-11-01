@@ -68,6 +68,6 @@ export const friendListGet = async (userId: string): Promise<Response> => {
 export const userListGet = async (findUserForm: FindUserForm): Promise<Response> => {
     const query = queryString.stringify(findUserForm);
     return fetch(`${baseUrl()}/user/list?${query}`, {
-        method: 'get'
+        method: 'get',
     });
 };
