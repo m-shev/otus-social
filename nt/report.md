@@ -29,6 +29,7 @@
     <tr><th>id</th><th>select_type</th><th>table</th><th>partitions</th><th>type</th><th>possible_keys</th><th>key</th><th>key_len</th><th>ref</th><th>rows</th><th>filtered</th><th>Extra</th></tr>
     <tr><td>1</td><td>SIMPLE</td><td>user</td><td>NULL</td><td>range</td><td>user_surname_name</td><td>user_surname_name</td><td>2044</td><td>NULL</td><td>1</td><td>11.11</td><td>Using index condition</td></tr>
 </table>
+
 ### Результаты нагрузочного тестирования с использованием wrk, значение timeout - 5s
 
 | Threads | Connections | Latency | Req/Sec | Total Request | Broken Request % |
