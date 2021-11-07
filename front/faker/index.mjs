@@ -4,9 +4,11 @@ import faker from 'faker/locale/ru.js';
 import fetch from 'node-fetch';
 import avatars from './avatars.js'
 
-const LOOKUP = 1000;
+const LOOKUP = 10_000;
 
 const options = ['музыка', 'фильмы', 'спорт', 'компьютерные игры', 'путешествия'];
+const localUrl = 'http://localhost:3005/user/registrations';
+const promUrl = 'https://mshev.ru/user/registrations';
 
 const readCity = () => {
     const cityJson = JSON.parse(fs.readFileSync('russian-cities.json', 'utf8'))
@@ -42,9 +44,11 @@ const collectAvatars = async () => {
 
 const generate = async () => {
     const cities = readCity();
-
+    let users = [];
+    let count = 0;
     for (let i = 0; i < LOOKUP; i++) {
         const gender = faker.datatype.number({min: 0, max: 1});
+
         const user = {
             avatar: faker.random.arrayElement(gender === 0 ? avatars.men : avatars.women),
             name: faker.name.firstName(gender),
@@ -56,23 +60,44 @@ const generate = async () => {
             }),
             city: faker.random.arrayElement(cities),
             interests: faker.random.arrayElements(options),
-            email: faker.internet.email(),
+            email: i.toString() + faker.internet.email(),
             password: 'password',
         };
 
-        // console.log(user);
-        const resp = await fetch('https://mshev.ru/user/registration', {
-            method: 'post',
-            body: JSON.stringify(user),
-            headers: {'Content-Type': 'application/json'},
-        });
 
-        if (resp.status !== 200) {
-            console.log('error', await resp.text());
-        } else {
-            // console.log('user created successfully', user.name, user.id);
+        // const resp = fetch('https://mshev.ru/user/registration', {
+        //     method: 'post',
+        //     body: JSON.stringify(user),
+        //     headers: {'Content-Type': 'application/json'},
+        // });
+
+        users.push(user);
+
+        if (users.length === 500) {
+            try {
+                console.time("executed")
+                const resp = await fetch(localUrl, {
+                    method: 'post',
+                    body: JSON.stringify(users),
+                    headers: {'Content-Type': 'application/json'}
+                })
+
+                if (resp.status !== 200) {
+                    console.log(await resp.text())
+                }
+
+                count += users.length;
+                console.log("success added: ", count);
+                console.timeEnd("executed");
+            } catch (e) {
+                console.log("error", e);
+            }
+
+            users = [];
         }
     }
+
+    console.log("finished")
 };
 
 // await collectAvatars();

@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from 'react';
-import {userListPost} from '../../../api';
+import {userListGet} from '../../../api';
 import {HttpStatus, UserFriend} from '../../../types';
 
 const TAKE_LAST_USER = 20;
@@ -8,7 +8,7 @@ export const useLastUserList = (): UserFriend[] => {
     const [userList, setUserList] = useState([]);
 
     const loadLastUserList = useCallback(async () => {
-        const resp = await userListPost({skip: 0, take: TAKE_LAST_USER});
+        const resp = await userListGet({skip: 0, take: TAKE_LAST_USER});
 
         if (resp.status === HttpStatus.Ok) {
             const list = await resp.json();
