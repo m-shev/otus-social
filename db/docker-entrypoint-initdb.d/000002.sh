@@ -1,5 +1,5 @@
 ##!/bin/bash
 set -e
 source "../.msql"
-echo "i work ------------------>"
+echo "-------------> grant index on socialdb.* to social"
 mysql -u root -p"$R" -e "grant index on socialdb.* to social";
