@@ -1,0 +1,34 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: social-db
+    image: sigma-social-db
+    volumes:
+      - social-db-data:/var/lib/mysql
+    networks:
+      - sigma_net
+    ports:
+      - "3306:3306"
+
+  db-replica-1:
+    depends_on:
+      - db
+    container_name: db-replica-1
+    image: sigma-social-db-replica-1
+#    volumes:
+#      - social-db-replica-1-data:/var/lib/mysql
+    networks:
+      - sigma_net
+    ports:
+      - "3305:3306"
+
+networks:
+  sigma_net:
+    name: sigma_net
+
+volumes:
+  social-db-data:
+    name: social-db-data
+  social-db-replica-1-data:
+    name: social-db-replica-1-data
