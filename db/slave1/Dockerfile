@@ -1,4 +1,4 @@
-FROM mysql
+FROM mysql:8.0.27
 ARG sec
 ENV MYSQL_ROOT_PASSWORD $sec
 COPY ./slave1/docker-entrypoint-initdb.d/* /docker-entrypoint-initdb.d/

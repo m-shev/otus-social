@@ -71,14 +71,6 @@ func (a *Api) ListRegistration(c *gin.Context) {
 	c.Status(http.StatusOK)
 }
 
-type MeetingService interface {
-	CreateTask()
-}
-
-type CallService interface {
-	CreateTask()
-}
-
 func (a *Api) Auth(c *gin.Context) {
 	var form user.AuthForm
 	err := c.BindJSON(&form)

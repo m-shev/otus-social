@@ -26,8 +26,6 @@ services:
       - "3305:3306"
 
   db-replica-2:
-    depends_on:
-      - db
     container_name: db-replica-2
     image: sigma-social-db-replica-2
     volumes:
@@ -38,8 +36,22 @@ services:
     ports:
       - "3304:3306"
 
+#  db-proxysql:
+#    container_name: db-proxy
+#    image: sigma-db-proxy
+#    networks:
+#      - sigma_net
+#    ports:
+#      # Mysql Client Port
+#      - "6033:6033"
+#      # Mysql Admin Port
+#      - "6032:6032"
+#      # Web
+#      - "6080:6080"
+
 networks:
   sigma_net:
+    external: true
     name: sigma_net
 
 volumes:

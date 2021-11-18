@@ -8,10 +8,6 @@ func (s *Service) Auth(form AuthForm) (User, error)  {
 		return User{}, ErrorUserNotFound
 	}
 
-	if err != nil {
-		return User{}, err
-	}
-
 	if !isHashEqual(u.Password, form.Password) {
 		return User{}, ErrorUserUnauthorized
 	}

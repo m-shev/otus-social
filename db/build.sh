@@ -13,7 +13,14 @@ relay-log = /var/log/mysql/mysql-relay-bin.log
 log_bin = /var/log/mysql/mysql-bin.log
 
 # название Вашей базы данных, которая будет реплицироваться
-binlog_do_db=socialdb"
+binlog_do_db=socialdb
+
+### Error log settings
+log_error	= /var/log/mysql/error.log
+
+### General log settings
+general_log = 1
+general_log_file = /var/log/mysql/general.log"
 
 mycnf2="[mysqld]
        # ID slave
@@ -26,20 +33,26 @@ mycnf2="[mysqld]
        log_bin = /var/log/mysql/mysql-bin.log
 
        # название Вашей базы данных, которая будет реплицироваться
-       binlog_do_db=socialdb"
+       binlog_do_db=socialdb
+
+       ### Error log settings
+       log_error	            = /var/log/mysql/error.log
+
+       ### General log settings
+       general_log_file        = /var/log/mysql/general.log"
 
 ## build master
 #docker build --no-cache --build-arg sec="$R" -t sigma-social-db:latest .
 
-## build slave1
-#rm ./slave1/.my.cnf
-#echo "$mycnf1" >> ./slave1/.my.cnf
-#docker build --no-cache --build-arg sec="$R" -f ./slave1/Dockerfile -t sigma-social-db-replica-1:latest .
+# build slave1
+rm ./slave1/.my.cnf
+echo "$mycnf1" >> ./slave1/.my.cnf
+docker build --no-cache --build-arg sec="$R" -f ./slave1/Dockerfile -t sigma-social-db-replica-1:latest .
 
-# build slave2
+## build slave2
 #rm ./slave1/.my.cnf
 #echo "$mycnf2" >> ./slave1/.my.cnf
 #docker build --no-cache --build-arg sec="$R" -f ./slave1/Dockerfile -t sigma-social-db-replica-2:latest .
 
 #build proxysql
-docker build --no-cache -f ./proxysql/Dockerfile -t sigma-social-proxysql:latest .
+docker build --no-cache -f ./proxysql/Dockerfile -t sigma-db-proxy:latest .
