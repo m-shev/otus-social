@@ -7,8 +7,8 @@ Protection:
     - "http://localhost:3000"
     - "http://localhost"
 db:
-  Password: "xylsalsdjfl"
-  User: "root"
+  Password: "alsdgkjsadf"
+  User: "social"
   Port: "6033"
   Host: "127.0.0.1"
   DbName: "socialdb"

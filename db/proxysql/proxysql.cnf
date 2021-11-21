@@ -7,6 +7,7 @@ admin_variables=
     admin_credentials="admin:admin;radmin:radmin"
     mysql_ifaces="0.0.0.0:6032"
     debug=true
+    hash_passwords=false
 }
 
 mysql_variables =
@@ -37,18 +38,25 @@ mysql_servers =
         max_connections=200
         use_ssl=1
     },
+    {
+        address="db-replica-2"
+        port="3304"
+        hostgroup=1
+        max_connections=200
+        use_ssl=1
+    },
 )
 
 mysql_users:
 (
     {
-    	username="root"
-    	password="xylsalsdjfl"
+    	username="social"
+    	password="alsdgkjsadf"
     	default_hostgroup=0
     	max_connections=1000
     	default_schema="information_schema"
     	active = 1
-    }
+    },
 )
 
 mysql_query_rules:
@@ -56,15 +64,22 @@ mysql_query_rules:
     {
         rule_id=1
         active=1
-        match_pattern="^SELECT.*FOR UPDATE$"
+        match_pattern="^select .* from user where id=."
         destination_hostgroup=0
         apply=1
     },
     {
         rule_id=2
         active=1
-        match_pattern="^SELECT"
-        destination_hostgroup=0
+        match_pattern="^select .* from user"
+        destination_hostgroup=1
+        apply=1
+    },
+    {
+        rule_id=3
+        active=1
+        match_pattern="^select .* from interest"
+        destination_hostgroup=1
         apply=1
     },
 )
