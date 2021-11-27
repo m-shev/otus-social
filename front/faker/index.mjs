@@ -4,10 +4,10 @@ import faker from 'faker/locale/ru.js';
 import fetch from 'node-fetch';
 import avatars from './avatars.js'
 
-const LOOKUP = 10_000;
+const LOOKUP = 100_000;
 
 const options = ['музыка', 'фильмы', 'спорт', 'компьютерные игры', 'путешествия'];
-const localUrl = 'http://localhost:3005/user/registrations';
+const localUrl = 'http://localhost:3005/user/registration';
 const promUrl = 'https://mshev.ru/user/registrations';
 
 const readCity = () => {
@@ -45,7 +45,7 @@ const collectAvatars = async () => {
 const generate = async () => {
     const cities = readCity();
     let users = [];
-    let count = 0;
+
     for (let i = 0; i < LOOKUP; i++) {
         const gender = faker.datatype.number({min: 0, max: 1});
 
@@ -65,42 +65,38 @@ const generate = async () => {
         };
 
 
-        // const resp = fetch('https://mshev.ru/user/registration', {
-        //     method: 'post',
-        //     body: JSON.stringify(user),
-        //     headers: {'Content-Type': 'application/json'},
-        // });
-
         users.push(user);
 
-        if (users.length === 500) {
-            try {
-                console.time("executed")
-                const resp = await fetch(localUrl, {
+        if (users.length === 200) {
+            console.time("executed");
+            const promises = [];
+
+            for (const user of users) {
+                const resp = fetch(localUrl, {
                     method: 'post',
-                    body: JSON.stringify(users),
+                    body: JSON.stringify(user),
                     headers: {'Content-Type': 'application/json'}
                 })
 
-                if (resp.status !== 200) {
-                    console.log(await resp.text())
-                }
+                promises.push(resp);
+            }
 
-                count += users.length;
-                console.log("success added: ", count);
-                console.timeEnd("executed");
-            } catch (e) {
-                console.log("error", e);
+            const results = await Promise.all(promises).catch(e => {
+                console.log(e);
+            });
+
+            for (const res of results) {
+                res.status !== 200 ? console.log(await res.text()) : console.log(await res.json());
             }
 
             users = [];
+            console.timeEnd("executed");
         }
     }
 
     console.log("finished")
 };
 
-// await collectAvatars();
-
+console.time("total execution");
 await generate();
-// readCity()
+console.timeEnd("total execution");

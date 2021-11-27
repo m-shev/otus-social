@@ -9,8 +9,8 @@ Protection:
 db:
   Password: "alsdgkjsadf"
   User: "social"
-  Port: "3306"
-  Host: "0.0.0.0"
+  Port: "6033"
+  Host: "127.0.0.1"
   DbName: "socialdb"
   MaxOpenConnection: 100
   MaxOpenIdleConnection: 100

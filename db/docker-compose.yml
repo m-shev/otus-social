@@ -1,0 +1,78 @@
+version: "3.8"
+
+services:
+  db:
+    container_name: social-db
+    image: sigma-social-db
+    volumes:
+      - social-db-data:/var/lib/mysql
+      - social-db-log:/var/log/mysql
+    networks:
+      - sigma_net
+    ports:
+      - "3306:3306"
+    deploy:
+      resources:
+        limits:
+          memory: 2048m
+          cpus: 2
+
+  db-replica-1:
+    depends_on:
+      - db
+    container_name: db-replica-1
+    image: sigma-social-db-replica-1
+    volumes:
+      - social-db-replica-1-data:/var/lib/mysql
+      - social-db-replica-1-log:/var/log/mysql
+    networks:
+      - sigma_net
+    ports:
+      - "3305:3306"
+
+  db-replica-2:
+    container_name: db-replica-2
+    image: sigma-social-db-replica-2
+    volumes:
+      - social-db-replica-2-data:/var/lib/mysql
+      - social-db-replica-2-log:/var/log/mysql
+    networks:
+      - sigma_net
+    ports:
+      - "3304:3306"
+
+  db-proxysql:
+    depends_on:
+      - db
+      - db-replica-1
+      - db-replica-2
+    container_name: db-proxy
+    image: sigma-db-proxy
+    networks:
+      - sigma_net
+    ports:
+      # Mysql Client Port
+      - "6033:6033"
+      # Mysql Admin Port
+      - "6032:6032"
+      # Web
+      - "6080:6080"
+
+networks:
+  sigma_net:
+    external: true
+    name: sigma_net
+
+volumes:
+  social-db-data:
+    name: social-db-data
+  social-db-log:
+    name: social-db-log
+  social-db-replica-1-data:
+    name: social-db-replica-1-data
+  social-db-replica-2-data:
+    name: social-db-replica-2-data
+  social-db-replica-1-log:
+    name: social-db-replica-1-log
+  social-db-replica-2-log:
+    name: social-db-replica-2-log

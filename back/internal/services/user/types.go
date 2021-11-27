@@ -34,15 +34,15 @@ type User struct {
 }
 
 type FriendForm struct {
-	UserId int `json:"userId"`
+	UserId   int `json:"userId"`
 	FriendId int `json:"friendId"`
 }
 
 type FindUsersForm struct {
-	Name string `json:"name"`
+	Name    string `json:"name"`
 	Surname string `json:"surname"`
-	Skip int `json:"skip"`
-	Take int `json:"take"`
+	Skip    int    `json:"skip"`
+	Take    int    `json:"take"`
 }
 
 type Friend struct {
@@ -51,8 +51,6 @@ type Friend struct {
 	Name    string `json:"name"`
 	Surname string `json:"surname"`
 }
-
-
 
 type Profile struct {
 	Id        int        `json:"id"`
