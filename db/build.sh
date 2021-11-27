@@ -20,7 +20,7 @@ log_bin=/var/log/mysql/mysql-bin.log
 binlog_format=ROW
 
 # включаем получинхронную репликацию
-rpl_semi_sync_replica_enabled = true
+#rpl_semi_sync_replica_enabled = true
 
 # GTID
 gtid_mode=ON
@@ -56,7 +56,7 @@ docker build --no-cache --build-arg sec="$R" -f ./slave/Dockerfile -t sigma-soci
 
 ## build slave2
 rm -f ./slave/.my.cnf
-echo "$mycnfReplica1 $commonConfig" >> ./slave/.my.cnf
+echo "$mycnfReplica2 $commonConfig" >> ./slave/.my.cnf
 docker build --no-cache --build-arg sec="$R" -f ./slave/Dockerfile -t sigma-social-db-replica-2:latest .
 
 #build proxysql
