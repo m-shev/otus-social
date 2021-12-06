@@ -6,8 +6,6 @@ type Config struct {
 	Db
 	Server
 	Protection
-	isRead bool
-	env    string
 }
 
 type Db struct {
