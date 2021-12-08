@@ -1,4 +1,4 @@
-module github.com/m-shev/otus-social
+module github.com/m-shev/otus-social/back
 
 go 1.16
 
@@ -18,10 +18,12 @@ require (
 	github.com/docker/go-connections v0.4.0 // indirect
 	github.com/go-playground/validator/v10 v10.9.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/m-shev/go-config v0.0.2
+	github.com/m-shev/go-config v0.1.0
 	github.com/mattn/go-isatty v0.0.14 // indirect
+	github.com/mitchellh/mapstructure v1.4.3 // indirect
 	github.com/opencontainers/image-spec v1.0.2 // indirect
 	github.com/ugorji/go v1.2.6 // indirect
-	golang.org/x/sys v0.0.0-20211007075335-d3039528d8ac // indirect
+	golang.org/x/sys v0.0.0-20211205182925-97ca703d548d // indirect
 	golang.org/x/text v0.3.7 // indirect
+	gopkg.in/ini.v1 v1.66.2 // indirect
 )

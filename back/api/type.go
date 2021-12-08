@@ -1,6 +1,6 @@
 package api
 
-import "github.com/m-shev/otus-social/internal/services/user"
+import "github.com/m-shev/otus-social/back/internal/services/user"
 
 type friendListResponse struct {
 	FriendList []user.Friend `json:"friendList"`

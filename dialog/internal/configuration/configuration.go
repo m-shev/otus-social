@@ -1,10 +1,27 @@
-package config
+package configuration
 
 import (
 	"github.com/m-shev/go-config"
+	"time"
 )
 
-var conf = &Config{}
+type Configuration struct {
+	Server
+}
+
+type Server struct {
+	StartDelay time.Duration
+	Host       string
+	Port       string
+}
+
+const (
+	prefix            = "dialog"
+	defaultConfig     = "default"
+	defaultConfigPath = "./config"
+)
+
+var conf = &Configuration{}
 
 var configFiles = map[string]string{
 	goconfig.DEV:  "dev",
@@ -12,15 +29,9 @@ var configFiles = map[string]string{
 	goconfig.PROD: "prod",
 }
 
-const (
-	prefix            = "social"
-	defaultConfig     = "default"
-	defaultConfigPath = "./config"
-)
-
 var isRead bool
 
-func GetConfig() Config {
+func GetConfig() Configuration {
 
 	if !isRead {
 		con := goconfig.NewGoConfig(goconfig.Option{

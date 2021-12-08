@@ -3,8 +3,8 @@ package user_storage
 import (
 	"context"
 	"database/sql"
-	"github.com/m-shev/otus-social/internal/connector"
-	"github.com/m-shev/otus-social/internal/services/user"
+	"github.com/m-shev/otus-social/back/internal/connector"
+	"github.com/m-shev/otus-social/back/internal/services/user"
 	"strings"
 	"time"
 )
