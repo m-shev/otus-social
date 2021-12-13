@@ -7,12 +7,33 @@ import (
 
 type Configuration struct {
 	Server
+	Db
 }
 
 type Server struct {
 	StartDelay time.Duration
 	Host       string
 	Port       string
+}
+
+type Db struct {
+	DialogDb      DbConfig
+	MessageDbList []DbConfig
+}
+
+type DbId = string
+
+type DbConfig struct {
+	DbId              DbId
+	Password          string
+	User              string
+	Host              string
+	Port              string
+	DbName            string
+	MaxOpenConnection int
+	MaxIdleConnection int
+	ConnMaxLifetime   time.Duration
+	MigrationPath     string
 }
 
 const (
@@ -47,6 +68,8 @@ func GetConfig() Configuration {
 		if err != nil {
 			panic(err.Error())
 		}
+
+		isRead = true
 	}
 
 	return *conf
