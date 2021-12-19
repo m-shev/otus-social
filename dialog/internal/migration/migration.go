@@ -10,6 +10,7 @@ import (
 )
 
 type DbConfig struct {
+	DbId          string
 	User          string
 	Password      string
 	Host          string
@@ -28,6 +29,9 @@ func NewMigrationHelper() *Manager {
 
 func (m *Manager) Up(dbConf DbConfig) {
 	defer recovery()
+
+	log.Printf("Migration up for %s\n", dbConf.DbId)
+
 	if err := m.create(dbConf).Up(); err != nil {
 		m.handleMigrationErr(err)
 	} else {
@@ -39,12 +43,18 @@ func (m *Manager) Up(dbConf DbConfig) {
 
 func (m *Manager) Down(dbConf DbConfig) {
 	defer recovery()
+
+	log.Printf("Migration down for %s", dbConf.DbId)
+
 	m.handleMigrationErr(m.create(dbConf).Down())
 	m.close()
 }
 
 func (m *Manager) Force(version int, dbConfig DbConfig) {
 	defer recovery()
+
+	log.Printf("Migration force for %s", dbConfig.DbId)
+
 	m.handleMigrationErr(m.create(dbConfig).Force(version))
 	m.close()
 }
@@ -65,11 +75,11 @@ func (m *Manager) create(dbConfig DbConfig) *migrate.Migrate {
 }
 
 func (m *Manager) open(dbConfig DbConfig) *sql.DB {
-	if m.db == nil {
-		db, err := sql.Open("mysql", m.dbUrl(dbConfig))
-		m.handleMigrationErr(err)
-		m.db = db
-	}
+	log.Printf("Opening connection to %s on %s:%s", dbConfig.DbId, dbConfig.Host, dbConfig.Port)
+
+	db, err := sql.Open("mysql", m.dbUrl(dbConfig))
+	m.handleMigrationErr(err)
+	m.db = db
 
 	return m.db
 }

@@ -47,7 +47,9 @@ func router(conf configuration.Configuration) *gin.Engine {
 
 func runMigrate(dbConfig configuration.Db) {
 	h := migration.NewMigrationHelper()
-	dialog := migration.DbConfig{
+
+	dialogConf := migration.DbConfig{
+		DbId:          dbConfig.DialogDb.DbId,
 		User:          dbConfig.DialogDb.User,
 		Password:      dbConfig.DialogDb.Password,
 		Host:          dbConfig.DialogDb.Host,
@@ -55,6 +57,20 @@ func runMigrate(dbConfig configuration.Db) {
 		DbName:        dbConfig.DialogDb.DbName,
 		MigrationPath: dbConfig.DialogDb.MigrationPath,
 	}
-	h.Up(dialog)
-	//h.Force(1, dialog)
+
+	h.Up(dialogConf)
+
+	for _, v := range dbConfig.MessageDbList {
+		messageShard := migration.DbConfig{
+			DbId:          v.DbId,
+			User:          v.User,
+			Password:      v.Password,
+			Host:          v.Host,
+			Port:          v.Port,
+			DbName:        v.DbName,
+			MigrationPath: v.MigrationPath,
+		}
+
+		h.Up(messageShard)
+	}
 }

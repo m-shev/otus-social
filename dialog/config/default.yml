@@ -4,7 +4,7 @@ server:
   Port: "3006"
 db:
   DialogDb:
-    dbId: "dialog"
+    dbId: "dialogdb"
     Password: "secret"
     User: "dialog"
     Port: "3310"
@@ -17,24 +17,24 @@ db:
   MessageDbList:
     -
       dbId: "message_shard_1"
-      Password: "secret"
+      Password: "shard_secret"
       User: "message_shard_1"
-      Port: "6033"
+      Port: "3311"
       Host: "127.0.0.1"
-      DbName: "socialdb"
+      DbName: "messagedb"
       MaxOpenConnection: 100
       MaxOpenIdleConnection: 100
       ConnMaxLifetime: 10
       MigrationPath: "db/migrations/message"
     -
       dbId: "message_shard_2"
-      Password: "secret"
+      Password: "shard_secret"
       User: "message_shard_2"
-      Port: "6033"
+      Port: "3312"
       Host: "127.0.0.1"
-      DbName: "socialdb"
+      DbName: "messagedb"
       MaxOpenConnection: 100
       MaxOpenIdleConnection: 100
       ConnMaxLifetime: 10
-      MigrationPath: "./migrations"
+      MigrationPath: "db/migrations/message"
 

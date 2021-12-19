@@ -8,6 +8,20 @@ services:
       - dialog_net
     ports:
       - "3310:3306"
+  message_shard_1:
+    container_name: message_shard_1
+    image: message_shard_1-db
+    networks:
+      - dialog_net
+    ports:
+      - "3311:3306"
+  message_shard_2:
+    container_name: message_shard_2
+    image: message_shard_2-db
+    networks:
+      - dialog_net
+    ports:
+      - "3312:3306"
 
 networks:
   dialog_net:
