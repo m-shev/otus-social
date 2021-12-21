@@ -2,14 +2,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/m-shev/otus-social/test/ring"
+	"github.com/m-shev/otus-social/test/consistent"
+	"golang.org/x/text/language"
+	"golang.org/x/text/message"
 	"sort"
 	"strconv"
 )
 
 func main() {
-	m := []string{"1", "2", "3", "4", "5"}
-	c := ring.NewConsistentHash(m)
+	m := []string{"1", "2", "3", "4", "5", "6", "7", "8"}
+	c := consistent.NewConsistentHash(m, 2)
 	fmt.Println()
 	dic := make(map[string]int)
 
@@ -19,7 +21,7 @@ func main() {
 	fmt.Println(m)
 	fmt.Println(dic)
 
-	for i := 0; i <= 1000; i++ {
+	for i := 0; i <= 10000000; i++ {
 		node := c.GetNode(strconv.Itoa(i))
 		if _, ok := dic[node]; !ok {
 			panic(fmt.Sprintf("node %s not found in dictionary"))
@@ -29,7 +31,8 @@ func main() {
 	}
 
 	for k, v := range dic {
-		fmt.Println(k, ":", v)
+		p := message.NewPrinter(language.Romanian)
+		_, _ = p.Printf("%s: %d\n", k, v)
 	}
 }
 
