@@ -12,7 +12,7 @@ import (
 
 var printer = message.NewPrinter(language.Russian)
 
-type ConsistentHash struct {
+type Ring struct {
 	nodeList         nodes
 	initialNodeCount uint32
 	prevStep         uint32
@@ -25,6 +25,11 @@ type node struct {
 	step   uint32
 }
 
+type NodeConfig struct {
+	NodeId   string
+	TargetId string
+}
+
 type nodes []*node
 
 func (n nodes) Len() int           { return len(n) }
@@ -32,106 +37,133 @@ func (n nodes) Swap(i, j int)      { n[i], n[j] = n[j], n[i] }
 func (n nodes) Less(i, j int) bool { return n[i].hashId < n[j].hashId }
 
 var ErrNodeNotFound = errors.New("node not found")
+var ErrTargetShouldBeNotEmpty = errors.New("to add a node the target must be not empty")
 
-func NewConsistentHash(nodeIds []string, initialNodeCount uint32) *ConsistentHash {
-	step := math.MaxUint32 / initialNodeCount
-	c := &ConsistentHash{
-		nodeList:         createNodes(nodeIds, initialNodeCount, step),
+func NewRing(configs []NodeConfig) (*Ring, error) {
+	count := uint32(countInitialNodes(configs))
+	step := math.MaxUint32 / count
+
+	r := &Ring{
+		nodeList:         createNodes(configs[:count], step),
 		prevStep:         step,
-		initialNodeCount: initialNodeCount,
+		initialNodeCount: count,
 		Mutex:            sync.Mutex{},
 	}
-	restNodes := nodeIds[initialNodeCount:]
-	for _, v := range restNodes {
-		c.AddNode(v)
+	err := r.AddNodes(configs[count:])
+
+	if err != nil {
+		return nil, err
 	}
 
-	return c
+	for _, v := range r.nodeList {
+
+		_, _ = printer.Printf("%s: %d\n", v.id, v.hashId)
+	}
+
+	return r, nil
 }
 
-func (c *ConsistentHash) AddNode(nodeId string) {
-	c.Lock()
-	defer c.Unlock()
-	nextStep := c.prevStep / uint32(2)
+func (r *Ring) AddNodes(configs []NodeConfig) error {
+	for _, v := range configs {
+		err := r.AddNode(v)
 
-	target := c.searchNodeByStep()
-
-	if target == nil {
-		target = c.nodeList[0]
-		c.prevStep = nextStep
-	}
-
-	node := &node{
-		id:     nodeId,
-		step:   nextStep,
-		hashId: target.hashId + nextStep,
-	}
-
-	target.step = nextStep
-
-	c.nodeList = append(c.nodeList, node)
-
-	sort.Sort(c.nodeList)
-}
-
-func (c *ConsistentHash) searchNodeByStep() *node {
-	for _, v := range c.nodeList {
-		if v.step == c.prevStep {
-			return v
+		if err != nil {
+			return err
 		}
 	}
 
 	return nil
 }
 
-func (c *ConsistentHash) RemoveNode(nodeId string) error {
-	c.Mutex.Lock()
-	defer c.Unlock()
+func (r *Ring) AddNode(config NodeConfig) error {
+	r.Lock()
+	defer r.Unlock()
+	target, err := r.searchTarget(config.TargetId)
 
-	i := c.search(nodeId)
-
-	if nodeId != c.nodeList[i].id {
-		return ErrNodeNotFound
+	if err != nil {
+		return err
 	}
 
-	c.nodeList = append(c.nodeList[:i], c.nodeList[:i]...)
+	target.step = target.step / uint32(2)
+
+	n := &node{
+		id:     config.NodeId,
+		step:   target.step,
+		hashId: target.hashId + target.step,
+	}
+
+	r.nodeList = append(r.nodeList, n)
+
+	sort.Sort(r.nodeList)
 
 	return nil
 }
 
-func (c *ConsistentHash) GetNode(id string) string {
-	i := c.search(id)
+func (r *Ring) searchTarget(targetId string) (*node, error) {
+	var target *node
 
-	return c.nodeList[i].id
+	for _, v := range r.nodeList {
+		if targetId == v.id {
+			target = v
+			break
+		}
+	}
+
+	if target == nil {
+		return nil, ErrTargetShouldBeNotEmpty
+	}
+
+	return target, nil
 }
 
-func (c *ConsistentHash) search(id string) int {
+func (r *Ring) RemoveNode(nodeId string) error {
+	r.Mutex.Lock()
+	defer r.Unlock()
+
+	i := r.search(nodeId)
+
+	if nodeId != r.nodeList[i].id {
+		return ErrNodeNotFound
+	}
+
+	r.nodeList = append(r.nodeList[:i], r.nodeList[:i]...)
+
+	return nil
+}
+
+func (r *Ring) GetNode(id string) string {
+	i := r.search(id)
+
+	return r.nodeList[i].id
+}
+
+func (r *Ring) search(id string) int {
 	hash := hashId(id)
 
 	searchFn := func(i int) bool {
-		return c.nodeList[i].hashId > hash
+		return r.nodeList[i].hashId > hash
 	}
 
-	i := sort.Search(c.nodeList.Len(), searchFn)
+	i := sort.Search(r.nodeList.Len(), searchFn)
 
-	if i >= c.nodeList.Len() {
+	if i >= r.nodeList.Len() {
 		i = 0
 	}
 
 	return i
 }
 
-func createNodes(nodeIds []string, initialNodeCount uint32, step uint32) nodes {
+func createNodes(configs []NodeConfig, step uint32) nodes {
 	n := make(nodes, 0)
 	printer.Println(math.MaxUint32)
 	printer.Println("step", step)
 	idCount := uint32(0)
 
-	idsLen := uint32(len(nodeIds))
+	idsLen := uint32(len(configs))
 
-	for i := uint32(0); i < initialNodeCount && i < idsLen; i++ {
+	for i := uint32(0); i < idsLen; i++ {
 		n = append(n, &node{
-			id:     nodeIds[i],
+			id:     configs[i].NodeId,
 			hashId: idCount,
 			step:   step,
 		})
@@ -139,20 +171,25 @@ func createNodes(nodeIds []string, initialNodeCount uint32, step uint32) nodes {
 		idCount += step
 	}
 
-	//for _, v := range nodeIds {
-	//	n = append(n, node{id: v, hashId: start})
-	//	start += step
-	//}
-
 	sort.Sort(n)
 
-	for _, v := range n {
-
-		_, _ = printer.Printf("%s: %d\n", v.id, v.hashId)
-	}
 	return n
 }
 
 func hashId(id string) uint32 {
 	return crc32.ChecksumIEEE([]byte(id))
+}
+
+func countInitialNodes(nodes []NodeConfig) int {
+	count := 0
+
+	for _, v := range nodes {
+		if v.TargetId != "" {
+			break
+		}
+
+		count++
+	}
+
+	return count
 }

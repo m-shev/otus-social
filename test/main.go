@@ -3,26 +3,37 @@ package main
 import (
 	"fmt"
 	"github.com/m-shev/otus-social/test/consistent"
+	"github.com/satori/go.uuid"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
+	"log"
 	"sort"
-	"strconv"
 )
 
+var shard1 = consistent.NodeConfig{NodeId: "message_shard_1", TargetId: ""}
+var shard2 = consistent.NodeConfig{NodeId: "message_shard_2", TargetId: ""}
+var shard3 = consistent.NodeConfig{NodeId: "message_shard_3", TargetId: ""}
+var shard4 = consistent.NodeConfig{NodeId: "message_shard_4", TargetId: ""}
+var shard5 = consistent.NodeConfig{NodeId: "message_shard_5", TargetId: "message_shard_2"}
+var shard6 = consistent.NodeConfig{NodeId: "message_shard_6", TargetId: "message_shard_5"}
+
 func main() {
-	m := []string{"1", "2", "3", "4", "5", "6", "7", "8"}
-	c := consistent.NewConsistentHash(m, 2)
-	fmt.Println()
+	config := []consistent.NodeConfig{shard1, shard2, shard3, shard4}
+	c, err := consistent.NewRing(config)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
 	dic := make(map[string]int)
 
-	for _, v := range m {
-		dic[v] = 0
+	for _, v := range config {
+		dic[v.NodeId] = 0
 	}
-	fmt.Println(m)
+	fmt.Println(config)
 	fmt.Println(dic)
 
-	for i := 0; i <= 10000000; i++ {
-		node := c.GetNode(strconv.Itoa(i))
+	for i := 0; i <= 100_000_000; i++ {
+		node := c.GetNode(uuid.NewV4().String())
 		if _, ok := dic[node]; !ok {
 			panic(fmt.Sprintf("node %s not found in dictionary"))
 		}
@@ -31,7 +42,7 @@ func main() {
 	}
 
 	for k, v := range dic {
-		p := message.NewPrinter(language.Romanian)
+		p := message.NewPrinter(language.Russian)
 		_, _ = p.Printf("%s: %d\n", k, v)
 	}
 }
