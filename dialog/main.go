@@ -38,10 +38,13 @@ func router(conf configuration.Configuration) *gin.Engine {
 
 	handler.Use(gin.Logger())
 
+	// Dialog
 	handler.POST("dialog", a.CreateDialog)
 	handler.POST("dialog/member", a.AddDialogMember)
 	handler.GET("dialog/:dialogId", a.GetDialogById)
 
+	//Message
+	handler.POST("message", a.CreateMessage)
 	return handler
 }
 

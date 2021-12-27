@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"github.com/m-shev/otus-social/test/consistent"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 	"golang.org/x/text/language"
 	"golang.org/x/text/message"
 	"log"
@@ -18,7 +18,7 @@ var shard5 = consistent.NodeConfig{NodeId: "message_shard_5", TargetId: "message
 var shard6 = consistent.NodeConfig{NodeId: "message_shard_6", TargetId: "message_shard_5"}
 
 func main() {
-	config := []consistent.NodeConfig{shard1, shard2, shard3, shard4}
+	config := []consistent.NodeConfig{shard1, shard2, shard3, shard4, shard5, shard6}
 	c, err := consistent.NewRing(config)
 	if err != nil {
 		log.Fatalln(err)
@@ -32,7 +32,7 @@ func main() {
 	fmt.Println(config)
 	fmt.Println(dic)
 
-	for i := 0; i <= 100_000_000; i++ {
+	for i := 0; i <= 1_000_000; i++ {
 		node := c.GetNode(uuid.NewV4().String())
 		if _, ok := dic[node]; !ok {
 			panic(fmt.Sprintf("node %s not found in dictionary"))

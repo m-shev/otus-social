@@ -19,7 +19,7 @@ type node struct {
 	step   uint32
 }
 
-type NodeConfig struct {
+type ShardConfig struct {
 	NodeId   string
 	TargetId string
 }
@@ -33,7 +33,7 @@ func (n nodes) Less(i, j int) bool { return n[i].hashId < n[j].hashId }
 var ErrNodeNotFound = errors.New("node not found")
 var ErrTargetShouldBeNotEmpty = errors.New("to add a node the target must be not empty")
 
-func NewRing(configs []NodeConfig) (*Ring, error) {
+func NewRing(configs []ShardConfig) (*Ring, error) {
 	count := uint32(countInitialNodes(configs))
 	step := math.MaxUint32 / count
 
@@ -47,7 +47,7 @@ func NewRing(configs []NodeConfig) (*Ring, error) {
 	return r, err
 }
 
-func (r *Ring) AddNodes(configs []NodeConfig) error {
+func (r *Ring) AddNodes(configs []ShardConfig) error {
 	for _, v := range configs {
 		err := r.AddNode(v)
 
@@ -59,7 +59,7 @@ func (r *Ring) AddNodes(configs []NodeConfig) error {
 	return nil
 }
 
-func (r *Ring) AddNode(config NodeConfig) error {
+func (r *Ring) AddNode(config ShardConfig) error {
 	r.Lock()
 	defer r.Unlock()
 	target, err := r.searchTarget(config.TargetId)
@@ -122,7 +122,7 @@ func (r *Ring) search(id string) int {
 	return i
 }
 
-func createNodes(configs []NodeConfig, step uint32) nodes {
+func createNodes(configs []ShardConfig, step uint32) nodes {
 	n := make(nodes, 0)
 	idCount := uint32(0)
 
@@ -147,7 +147,7 @@ func hashId(id string) uint32 {
 	return crc32.ChecksumIEEE([]byte(id))
 }
 
-func countInitialNodes(nodes []NodeConfig) int {
+func countInitialNodes(nodes []ShardConfig) int {
 	count := 0
 
 	for _, v := range nodes {
