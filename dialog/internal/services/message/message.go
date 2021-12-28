@@ -53,15 +53,6 @@ func createRing(dbConfigs []configuration.DbConfig) (*consistent.Ring, error) {
 	return ring, err
 }
 
-func (s *Service) getShardConn(dialogId int64) (*sql.DB, error) {
-	id := strconv.FormatInt(dialogId, 10)
-	dbId := s.ring.GetNode(id)
-
-	conn, err := s.getConnection(dbId)
-
-	return conn, err
-}
-
 func (s *Service) CreateMessage(form CreateMessageForm) (Message, error) {
 	db, err := s.getShardConn(form.DialogId)
 
@@ -85,6 +76,62 @@ func (s *Service) CreateMessage(form CreateMessageForm) (Message, error) {
 	}
 
 	return s.getMessage(db, uuid)
+}
+
+func (s *Service) GetMessage(dialogId int64, messageId string) (Message, error) {
+	db, err := s.getShardConn(dialogId)
+
+	if err != nil {
+		return Message{}, err
+	}
+
+	return s.getMessage(db, messageId)
+}
+
+func (s *Service) GetMessageList(dialogId int64, params ListParams) ([]Message, error) {
+	db, err := s.getShardConn(dialogId)
+
+	messageList := make([]Message, 0)
+
+	if err != nil {
+		return messageList, nil
+	}
+
+	query := `select bin_to_uuid(message_id) message_id, 
+       dialog_id, 
+       author_id, 
+       content, 
+       create_at
+	from message order by create_at limit ?, ?`
+
+	ctx, _ := context.WithTimeout(context.Background(), queryTimeout)
+
+	rows, err := db.QueryContext(ctx, query, params.Skip, params.Take)
+
+	if err != nil {
+		return messageList, err
+	}
+
+	for rows.Next() {
+		var m Message
+
+		if err = rows.Scan(&m.MessageId, &m.DialogId, &m.AuthorId, &m.Content, &m.CreateAt); err != nil {
+			return messageList, err
+		}
+
+		messageList = append(messageList, m)
+	}
+
+	return messageList, err
+}
+
+func (s *Service) getShardConn(dialogId int64) (*sql.DB, error) {
+	id := strconv.FormatInt(dialogId, 10)
+	dbId := s.ring.GetNode(id)
+
+	conn, err := s.getConnection(dbId)
+
+	return conn, err
 }
 
 func (s *Service) getMessage(db *sql.DB, messageId string) (Message, error) {

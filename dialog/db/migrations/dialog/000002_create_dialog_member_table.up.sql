@@ -1,6 +1,6 @@
 CREATE TABLE dialog_member
 (
-    member_id INT UNIQUE,
+    member_id INT,
     dialog_id BIGINT,
     role ENUM('creator', 'member') NOT NULL,
     create_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,

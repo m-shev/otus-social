@@ -45,6 +45,8 @@ func router(conf configuration.Configuration) *gin.Engine {
 
 	//Message
 	handler.POST("message", a.CreateMessage)
+	handler.GET("dialog/:dialogId/messages/:messageId", a.GetMessage)
+	handler.GET("dialog/:dialogId/messages", a.GetMessageList)
 	return handler
 }
 

@@ -15,3 +15,8 @@ type CreateMessageForm struct {
 	AuthorId int
 	Content  string
 }
+
+type ListParams struct {
+	Take int
+	Skip int
+}
