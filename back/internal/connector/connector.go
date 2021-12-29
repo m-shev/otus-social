@@ -4,23 +4,22 @@ import (
 	"database/sql"
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/m-shev/otus-social/internal/config"
+	"github.com/m-shev/otus-social/back/internal/config"
 	"log"
 	"time"
 )
 
 type Connector struct {
-	conf config.Db
+	conf   config.Db
 	logger *log.Logger
-	db *sql.DB
+	db     *sql.DB
 }
-
 
 func NewDbConnector(conf config.Db, logger *log.Logger) *Connector {
 	return &Connector{
 		conf:   conf,
 		logger: logger,
-		db: nil,
+		db:     nil,
 	}
 }
 

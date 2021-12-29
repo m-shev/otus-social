@@ -1,0 +1,40 @@
+server:
+  StartDelay: 0
+  Host: "0.0.0.0"
+  Port: "3006"
+db:
+  DialogDb:
+    dbId: "dialogdb"
+    Password: "secret"
+    User: "dialog"
+    Port: "3310"
+    Host: "127.0.0.1"
+    DbName: "dialogdb"
+    MaxOpenConnection: 100
+    MaxOpenIdleConnection: 100
+    ConnMaxLifetime: 10
+    MigrationPath: "db/migrations/dialog"
+  MessageDbList:
+    -
+      dbId: "message_shard_1"
+      Password: "shard_secret"
+      User: "message_shard_1"
+      Port: "3311"
+      Host: "127.0.0.1"
+      DbName: "messagedb"
+      MaxOpenConnection: 100
+      MaxOpenIdleConnection: 100
+      ConnMaxLifetime: 10
+      MigrationPath: "db/migrations/message"
+    -
+      dbId: "message_shard_2"
+      Password: "shard_secret"
+      User: "message_shard_2"
+      Port: "3312"
+      Host: "127.0.0.1"
+      DbName: "messagedb"
+      MaxOpenConnection: 100
+      MaxOpenIdleConnection: 100
+      ConnMaxLifetime: 10
+      MigrationPath: "db/migrations/message"
+

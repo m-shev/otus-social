@@ -3,7 +3,7 @@ package user_storage
 import (
 	"database/sql"
 	"fmt"
-	"github.com/m-shev/otus-social/internal/services/user"
+	"github.com/m-shev/otus-social/back/internal/services/user"
 )
 
 const selectStr = "select user.id, user.name, user.surname, user.avatar from user"

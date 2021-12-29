@@ -1,102 +1,42 @@
 package config
 
 import (
-	"github.com/spf13/viper"
-	"log"
+	"github.com/m-shev/go-config"
 )
 
-var EnvType = struct {
-	Dev  string
-	QA   string
-	Prod string
-}{Dev: "DEV", Prod: "PROD", QA: "QA"}
-
-var conf = &Config{isRead: false}
+var conf = &Config{}
 
 var configFiles = map[string]string{
-	EnvType.Dev:  "dev",
-	EnvType.QA:   "qa",
-	EnvType.Prod: "prod",
+	goconfig.DEV:  "dev",
+	goconfig.QA:   "qa",
+	goconfig.PROD: "prod",
 }
 
 const (
 	prefix            = "social"
-	envVar            = "env"
 	defaultConfig     = "default"
 	defaultConfigPath = "./config"
 )
 
+var isRead bool
+
 func GetConfig() Config {
-	if !conf.isRead {
-		readConfig()
+
+	if !isRead {
+		con := goconfig.NewGoConfig(goconfig.Option{
+			Prefix:            prefix,
+			Config:            conf,
+			DefaultConfig:     defaultConfig,
+			DefaultConfigPath: defaultConfigPath,
+			ConfigFiles:       configFiles,
+		})
+
+		err := con.ReadConfig()
+
+		if err != nil {
+			panic(err.Error())
+		}
 	}
 
 	return *conf
-}
-
-func GetEnv() string {
-	return conf.env
-}
-
-func AddConfigPath(path string) {
-	viper.AddConfigPath(path)
-}
-
-func readConfig() {
-	defineEnv()
-	readDefault()
-	readTargetConfig()
-	conf.isRead = true
-}
-
-func readDefault() {
-	viper.AddConfigPath(defaultConfigPath)
-	viper.SetConfigName(defaultConfig)
-
-	read()
-	unmarshal()
-}
-
-func readTargetConfig() {
-	configName, ok := configFiles[conf.env]
-
-	if ok {
-		viper.SetConfigName(configName)
-		read()
-		unmarshal()
-	} else {
-		log.Fatal("Cannot read target config", configName)
-	}
-}
-
-func defineEnv() {
-	viper.AutomaticEnv()
-	viper.SetEnvPrefix(prefix)
-
-	env := viper.GetString(envVar)
-
-	switch env {
-	case EnvType.Prod:
-		conf.env = EnvType.Prod
-	case EnvType.QA:
-		conf.env = EnvType.QA
-	default:
-		conf.env = EnvType.Dev
-	}
-}
-
-func unmarshal() {
-	err := viper.Unmarshal(conf)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func read() {
-	err := viper.ReadInConfig()
-
-	if err != nil {
-		log.Fatal(err)
-	}
 }

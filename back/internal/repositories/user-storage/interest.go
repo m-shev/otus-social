@@ -1,7 +1,7 @@
 package user_storage
 
 import (
-	"github.com/m-shev/otus-social/internal/services/user"
+	"github.com/m-shev/otus-social/back/internal/services/user"
 	"strings"
 )
 
@@ -56,7 +56,6 @@ func (r *Repository) createInterests(interest []string) ([]user.Interest, error)
 
 	query := "insert into interest(name) values "
 	params := make([]interface{}, 0)
-
 
 	for i, v := range interest {
 		if i == 0 {
