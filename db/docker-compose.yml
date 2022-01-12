@@ -11,11 +11,6 @@ services:
       - sigma_net
     ports:
       - "3306:3306"
-    deploy:
-      resources:
-        limits:
-          memory: 2048m
-          cpus: 2
 
   db-replica-1:
     depends_on:

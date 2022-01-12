@@ -20,7 +20,7 @@ log_bin=/var/log/mysql/mysql-bin.log
 binlog_format=ROW
 
 # включаем получинхронную репликацию
-#rpl_semi_sync_replica_enabled = true
+# rpl_semi_sync_replica_enabled = false
 
 # GTID
 gtid_mode=ON
