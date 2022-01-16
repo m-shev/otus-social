@@ -4,6 +4,7 @@ export enum FieldType {
     Select = 'select',
     Input = 'input',
     Checkbox = 'checkbox',
+    TextArea = 'textarea',
 }
 
 export type FieldOption = {
@@ -34,13 +35,20 @@ export type CheckboxFieldProps = BaseFieldProps & {
     type: 'checkbox';
 };
 
+export type TextAreaFieldProps = BaseFieldProps;
+
 export type NumberFieldProps = BaseFieldProps & {
     min?: number;
     max?: number;
     type: 'number';
 };
 
-export type FieldProps = BaseFieldProps | SelectFieldProps | NumberFieldProps | CheckboxFieldProps;
+export type FieldProps =
+    | BaseFieldProps
+    | SelectFieldProps
+    | NumberFieldProps
+    | CheckboxFieldProps
+    | TextAreaFieldProps;
 
 export type DefaultFiledItem<T> = Pick<FieldProps, 'title' | 'required' | 'type'> & {
     id: keyof T;
@@ -57,8 +65,11 @@ export type NumberFieldItem<T> = DefaultFiledItem<T> &
 export type CheckboxFieldItem<T> = DefaultFiledItem<T> &
     Pick<CheckboxFieldProps, 'options' | 'type'>;
 
+export type TextAreaFieldItem<T> = DefaultFiledItem<T>;
+
 export type FieldItem<T> =
     | DefaultFiledItem<T>
     | SelectFieldItem<T>
     | NumberFieldItem<T>
-    | CheckboxFieldItem<T>;
+    | CheckboxFieldItem<T>
+    | TextAreaFieldItem<T>;

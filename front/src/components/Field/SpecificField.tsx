@@ -2,6 +2,7 @@ import * as React from 'react';
 import {CheckboxFieldProps, FieldProps, FieldType, SelectFieldProps} from './types';
 import styles from './Field.module.scss';
 import {CheckboxGroup} from './CheckboxGroup';
+import {TextArea, TextAreaProps} from './TextArea';
 
 export type SpecificFieldProps = FieldProps;
 
@@ -11,6 +12,10 @@ const isSelectedFieldProps = (props: FieldProps): props is SelectFieldProps => {
 
 const isCheckboxProps = (props: FieldProps): props is CheckboxFieldProps => {
     return props.type === FieldType.Checkbox;
+};
+
+const isTextAreaProps = (props: FieldProps): props is TextAreaProps => {
+    return props.type === FieldType.TextArea;
 };
 
 export const SpecificField: React.FC<SpecificFieldProps> = (props) => {
@@ -37,8 +42,9 @@ export const SpecificField: React.FC<SpecificFieldProps> = (props) => {
         return <CheckboxGroup {...props} />;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const {setFieldValue, ...rest} = props;
+    if (isTextAreaProps(props)) {
+        return <TextArea {...props} />;
+    }
 
-    return <input className={styles.field} {...rest} />;
+    return <input className={styles.field} {...props} />;
 };

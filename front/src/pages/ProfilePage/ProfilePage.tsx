@@ -52,9 +52,14 @@ export const ProfilePage: React.FC = () => {
                         </div>
 
                         {isCurrentUser && (
-                            <Link to={'/find'} className={styles.link}>
-                                Найти друзей
-                            </Link>
+                            <>
+                                <Link to={'/create-post'} className={styles.link}>
+                                    Создать пост
+                                </Link>
+                                <Link to={'/find'} className={styles.link}>
+                                    Найти друзей
+                                </Link>
+                            </>
                         )}
 
                         <div className={styles.friend}>{friendText}</div>

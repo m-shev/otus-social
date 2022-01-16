@@ -6,7 +6,9 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/m-shev/otus-social/back/internal/config"
 	"github.com/m-shev/otus-social/back/internal/connector"
-	user_storage "github.com/m-shev/otus-social/back/internal/repositories/user-storage"
+	poststorage "github.com/m-shev/otus-social/back/internal/repositories/post-storage"
+	userstorage "github.com/m-shev/otus-social/back/internal/repositories/user-storage"
+	"github.com/m-shev/otus-social/back/internal/services/post"
 	"github.com/m-shev/otus-social/back/internal/services/user"
 	"log"
 	"net/http"
@@ -17,16 +19,21 @@ type DefaultSession = func(c *gin.Context) sessions.Session
 
 type Api struct {
 	userService    *user.Service
+	postService    *post.Service
 	defaultSession DefaultSession
 }
 
 func NewApi(conf config.Db, logger *log.Logger, defaultSession DefaultSession) *Api {
 	dbConnect := connector.NewDbConnector(conf, logger)
-	userRepository := user_storage.NewRepository(dbConnect)
+	userRepository := userstorage.NewRepository(dbConnect)
 	userService := user.NewService(userRepository)
+
+	postRepository := poststorage.NewRepository(dbConnect)
+	postService := post.NewService(postRepository)
 
 	return &Api{
 		userService:    userService,
+		postService:    postService,
 		defaultSession: defaultSession,
 	}
 }

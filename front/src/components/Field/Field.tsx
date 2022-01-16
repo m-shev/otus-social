@@ -8,7 +8,7 @@ const renderCommonLabel = (props: Omit<FieldProps, 'setFieldValue'>) => {
 };
 
 export const Field: React.FC<FieldProps> = (props) => {
-    const {error, setFieldValue, ...restProps} = props;
+    const {error, ...restProps} = props;
 
     return (
         <div className={styles.root}>
@@ -18,7 +18,7 @@ export const Field: React.FC<FieldProps> = (props) => {
                 </label>
             )}
 
-            <SpecificField {...restProps} setFieldValue={setFieldValue} />
+            <SpecificField {...restProps} />
             {error && <span className={styles.error}>{error}</span>}
         </div>
     );

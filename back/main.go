@@ -22,7 +22,6 @@ func main() {
 
 	m := migration.NewManager(conf.Db, logger)
 	m.Up()
-
 	router := makeRouter(conf, logger)
 	addr := fmt.Sprintf("%s:%s", conf.Server.Host, conf.Server.Port)
 
@@ -56,7 +55,7 @@ func makeRouter(conf config.Config, logger *log.Logger) *gin.Engine {
 
 	handler.Use(sessions.Sessions("session", store))
 
-	// router
+	// USER
 	handler.POST("/user/registration", a.Registration)
 	handler.POST("user/registrations", a.ListRegistration)
 	handler.POST("/user/auth", a.Auth)
@@ -68,5 +67,9 @@ func makeRouter(conf config.Config, logger *log.Logger) *gin.Engine {
 	handler.GET("/user/:profileId/profile", a.Profile)
 	handler.GET("/user/:profileId/friends", a.FriendList)
 
+	// POST
+	handler.POST("/post", a.CreatePost)
+	handler.GET("/post/:postId", a.GetById)
+	handler.GET("/post", a.GetPostList)
 	return handler
 }
