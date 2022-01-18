@@ -5,13 +5,21 @@ import {fieldList, initialValues} from './const';
 import {Field} from '../../components/Field';
 import {useFormik} from 'formik';
 import {LoadableContent, SmallDots} from '../../components/LoadableContent';
+import {useCreatePost} from './hooks';
+import {useRedirectToProfile} from '../../hooks';
 
 export type CreatePostPageProps = {};
 
 export const CreatePostPage: React.FC<CreatePostPageProps> = () => {
+    const {onCreatePost, isFetch, error, requestState} = useCreatePost();
+
     const formik = useFormik({
         initialValues,
-        onSubmit: () => {},
+        onSubmit: onCreatePost,
+    });
+
+    useRedirectToProfile(() => {
+        return requestState === 'success';
     });
 
     return (
@@ -20,7 +28,7 @@ export const CreatePostPage: React.FC<CreatePostPageProps> = () => {
 
             <h2>Создание поста</h2>
 
-            <form>
+            <form onSubmit={formik.handleSubmit}>
                 {fieldList.map((field) => {
                     return (
                         <Field
@@ -33,7 +41,9 @@ export const CreatePostPage: React.FC<CreatePostPageProps> = () => {
                     );
                 })}
 
-                <LoadableContent isLoading={false} Loader={<SmallDots />}>
+                {error && <div className={styles.error}>{error.message}</div>}
+
+                <LoadableContent isLoading={isFetch} Loader={<SmallDots />}>
                     <button type="submit" className={styles.btn}>
                         Создать
                     </button>

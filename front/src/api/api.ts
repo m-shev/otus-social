@@ -1,4 +1,4 @@
-import {CreateUserForm, FindUserForm, FriendForm, LoginForm} from '../types';
+import {CreateUserForm, FindUserForm, FriendForm, LoginForm, CreatePostForm} from '../types';
 import * as queryString from 'query-string';
 
 const baseUrl = (): string => {
@@ -69,5 +69,13 @@ export const userListGet = async (findUserForm: FindUserForm): Promise<Response>
     const query = queryString.stringify(findUserForm);
     return fetch(`${baseUrl()}/user/list?${query}`, {
         method: 'get',
+    });
+};
+
+export const createPostPost = async (createPostForm: CreatePostForm): Promise<Response> => {
+    return fetch(`${baseUrl()}/post`, {
+        method: 'post',
+        body: JSON.stringify(createPostForm),
+        credentials: 'include',
     });
 };

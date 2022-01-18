@@ -5,7 +5,7 @@ import "time"
 type Repository interface {
 	Create(form CreatePostForm) (Post, error)
 	GetById(id int) (Post, error)
-	GetList(ids []int) ([]Post, error)
+	GetList(params ListParams) ([]Post, error)
 }
 
 type Post struct {
@@ -21,4 +21,11 @@ type CreatePostForm struct {
 	AuthorId  int    `json:"authorId"`
 	Content   string `json:"content"`
 	ImageLink string `json:"imageLink"`
+}
+
+type ListParams struct {
+	Ids      []int
+	AuthorId int
+	Take     int
+	Skip     int
 }

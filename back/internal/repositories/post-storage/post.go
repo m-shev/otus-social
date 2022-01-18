@@ -10,6 +10,7 @@ import (
 )
 
 const queryTimeout = time.Second * 15
+const defaultTake = 10
 
 type Storage struct {
 	db *sql.DB
@@ -54,19 +55,12 @@ func (s *Storage) GetById(id int) (post.Post, error) {
 	return p, err
 }
 
-func (s *Storage) GetList(ids []int) ([]post.Post, error) {
+func (s *Storage) GetList(params post.ListParams) ([]post.Post, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), queryTimeout)
 	defer cancel()
-	l := len(ids)
 
 	postList := make([]post.Post, 0)
-
-	query := "select * from post where id in (?" + strings.Repeat(",?", l-1) + ") order by createAt desc"
-	args := make([]interface{}, 0, l)
-
-	for _, v := range ids {
-		args = append(args, v)
-	}
+	query, args := prepareListReq(params)
 
 	rows, err := s.db.QueryContext(ctx, query, args...)
 
@@ -85,4 +79,47 @@ func (s *Storage) GetList(ids []int) ([]post.Post, error) {
 	}
 
 	return postList, nil
+}
+
+func prepareListReq(params post.ListParams) (string, []interface{}) {
+	str := strings.Builder{}
+	str.WriteString("select * from post")
+	idsLen := len(params.Ids)
+	args := make([]interface{}, 0)
+
+	useWhereAnd := false
+
+	if idsLen > 0 {
+		str.WriteString(" where id in (?")
+		str.WriteString(strings.Repeat(",?", idsLen-1))
+		str.WriteRune(')')
+
+		useWhereAnd = true
+
+		for _, v := range params.Ids {
+			args = append(args, v)
+		}
+	}
+
+	if params.AuthorId != 0 {
+		if useWhereAnd {
+			str.WriteString(" and")
+		}
+
+		str.WriteString(" where authorId=?")
+
+		args = append(args, params.AuthorId)
+	}
+
+	str.WriteString(" order by createAt desc limit ?,?")
+
+	args = append(args, params.Skip)
+
+	if params.Take == 0 {
+		args = append(args, defaultTake)
+	} else {
+		args = append(args, params.Take)
+	}
+
+	return str.String(), args
 }

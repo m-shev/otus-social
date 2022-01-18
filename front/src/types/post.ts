@@ -1,6 +1,6 @@
 export type Post = {
     id: number;
-    authorId: string;
+    authorId: number;
     content: string;
     imageLink?: string;
     createAt: Date;

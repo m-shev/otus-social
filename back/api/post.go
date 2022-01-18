@@ -45,15 +45,14 @@ func (a *Api) GetById(c *gin.Context) {
 }
 
 func (a *Api) GetPostList(c *gin.Context) {
-	ids, _ := c.GetQueryArray("ids")
-	idList, err := parsePostIds(ids)
+	params, err := preparePostListParams(c)
 
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
 		return
 	}
 
-	postList, err := a.postService.GetList(idList)
+	postList, err := a.postService.GetList(params)
 
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
@@ -61,6 +60,27 @@ func (a *Api) GetPostList(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, postList)
+}
+
+func preparePostListParams(c *gin.Context) (post.ListParams, error) {
+	idsStr, _ := c.GetQueryArray("ids")
+	ids, err := parsePostIds(idsStr)
+
+	if err != nil {
+		return post.ListParams{}, err
+	}
+
+	authorId, _ := strconv.Atoi(c.Query("authorId"))
+	take, _ := strconv.Atoi(c.Query("take"))
+	skip, _ := strconv.Atoi(c.Query("skip"))
+
+	return post.ListParams{
+		Ids:      ids,
+		AuthorId: authorId,
+		Take:     take,
+		Skip:     skip,
+	}, nil
+
 }
 
 func parsePostIds(ids []string) ([]int, error) {

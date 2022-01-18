@@ -1,16 +1,22 @@
-import {useStore} from 'effector-react';
-import {$userStore} from '../store/user';
 import {useHistory} from 'react-router';
 import {useEffect} from 'react';
+import {useUser} from './useUser';
 
-export const useRedirectToProfile = (): void => {
-    const {user} = useStore($userStore);
+export interface ICondition {
+    (): boolean;
+}
+
+export const useRedirectToProfile = (conditionFunc?: ICondition): void => {
+    const user = useUser();
     const history = useHistory();
 
     useEffect(() => {
         if (user != null) {
-            history.push(`profile?id=${user.id}`);
+            if ((conditionFunc && conditionFunc()) || !conditionFunc) {
+                history.push(`profile?id=${user.id}`);
+            }
         }
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [user]);
+    }, [user, conditionFunc]);
 };

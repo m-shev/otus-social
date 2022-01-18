@@ -16,6 +16,6 @@ func (s *Service) GetById(id int) (Post, error) {
 	return s.repository.GetById(id)
 }
 
-func (s *Service) GetList(ids []int) ([]Post, error) {
-	return s.repository.GetList(ids)
+func (s *Service) GetList(params ListParams) ([]Post, error) {
+	return s.repository.GetList(params)
 }

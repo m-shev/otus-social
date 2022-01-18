@@ -1,5 +1,5 @@
 import {FieldItem} from '../../components/Field/types';
-import {CreatePostForm} from '../../types/post';
+import {CreatePostForm} from '../../types';
 
 export type CreatePostField = Pick<CreatePostForm, 'content' | 'imageLink'>;
 
