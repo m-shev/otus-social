@@ -21,14 +21,14 @@ export const CreatePostPage: React.FC<CreatePostPageProps> = () => {
     useRedirectToProfile(() => {
         return requestState === 'success';
     });
-
+    const image = formik.values['imageLink'];
     return (
         <div className={styles.root}>
             <Header />
 
             <h2>Создание поста</h2>
 
-            <form onSubmit={formik.handleSubmit}>
+            <form onSubmit={formik.handleSubmit} className={styles.form}>
                 {fieldList.map((field) => {
                     return (
                         <Field
@@ -42,7 +42,7 @@ export const CreatePostPage: React.FC<CreatePostPageProps> = () => {
                 })}
 
                 {error && <div className={styles.error}>{error.message}</div>}
-
+                {image && <img className={styles.img} src={image} />}
                 <LoadableContent isLoading={isFetch} Loader={<SmallDots />}>
                     <button type="submit" className={styles.btn}>
                         Создать

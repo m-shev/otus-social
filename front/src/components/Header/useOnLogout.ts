@@ -1,4 +1,4 @@
-import {logoutGet} from '../../api';
+import {logout} from '../../api';
 import {useCallback} from 'react';
 import {userLogoutEvent} from '../../store/user';
 import {useHistory} from 'react-router';
@@ -14,7 +14,7 @@ export const useOnLogout = (user: User | null): IUseLogout => {
     const onLogout = useCallback(async () => {
         try {
             if (user) {
-                await logoutGet();
+                await logout();
                 userLogoutEvent();
             }
 

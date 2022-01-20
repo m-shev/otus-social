@@ -1,6 +1,6 @@
 import {useCallback} from 'react';
 import {CreateUserForm, HttpStatus, IUseRequestState, UserGender} from '../../../types';
-import {createUserPost} from '../../../api';
+import {createUser} from '../../../api';
 import {CreateFormValues} from '../const';
 import {FormikHelpers} from 'formik/dist/types';
 import {useRequest} from '../../../hooks';
@@ -47,7 +47,7 @@ export const useCreateUser = (): IUseCreateUser => {
 
             setIsFetch(true);
 
-            const resp = await createUserPost(mapValuesToForm(values));
+            const resp = await createUser(mapValuesToForm(values));
 
             if (resp.status === HttpStatus.Ok) {
                 setRequestState('success');

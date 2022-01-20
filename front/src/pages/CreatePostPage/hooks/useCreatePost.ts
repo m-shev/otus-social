@@ -2,7 +2,7 @@ import {HttpStatus, IUseRequestState} from '../../../types';
 import {useRequest, useUser} from '../../../hooks';
 import {useCallback} from 'react';
 import {CreatePostField} from '../const';
-import {createPostPost} from '../../../api';
+import {createPost} from '../../../api';
 
 export interface IUseCreatePost
     extends Pick<IUseRequestState, 'isFetch' | 'error' | 'requestState'> {
@@ -26,7 +26,7 @@ export const useCreatePost = (): IUseCreatePost => {
                     throw new Error('user must be not null');
                 }
 
-                const resp = await createPostPost({
+                const resp = await createPost({
                     content,
                     imageLink,
                     authorId: user.id,

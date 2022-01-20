@@ -3,7 +3,7 @@ import {$userStore} from '../../../store/user';
 import {HttpStatus, IUseRequestState, UserFriend, UserProfile} from '../../../types';
 import {useCallback, useMemo} from 'react';
 import {useRequest} from '../../../hooks';
-import {addFriendPost, removeFriendDelete} from '../../../api';
+import {addFriend, removeFriend} from '../../../api';
 import {ILoadProfile} from './useUserProfile';
 
 interface IAction {
@@ -43,7 +43,7 @@ export const useUserReference = (
     const addFriendAction = useCallback(async () => {
         try {
             setIsFetch(true);
-            const resp = await addFriendPost({
+            const resp = await addFriend({
                 userId: user?.id || 0,
                 friendId: userProfile?.id || 0,
             });
@@ -64,7 +64,7 @@ export const useUserReference = (
 
     const removeFromFriend = useCallback(async () => {
         try {
-            const resp = await removeFriendDelete({
+            const resp = await removeFriend({
                 userId: user?.id || 0,
                 friendId: userProfile?.id || 0,
             });

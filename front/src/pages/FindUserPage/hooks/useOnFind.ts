@@ -2,7 +2,7 @@ import {HttpStatus, IUseRequestState, UserFriend} from '../../../types';
 import {useRequest} from '../../../hooks';
 import {useCallback, useState} from 'react';
 import {FindForm} from '../const';
-import {userListGet} from '../../../api';
+import {getUserList} from '../../../api';
 
 const DEFAULT_TAKE = 500;
 
@@ -22,7 +22,7 @@ export const useOnFind = (): IUseOnFind => {
             setIsFetch(true);
 
             try {
-                const resp = await userListGet({
+                const resp = await getUserList({
                     skip: 0,
                     take: DEFAULT_TAKE,
                     name: values.name,

@@ -6,11 +6,15 @@
   flex-direction: column;
 }
 
+.userWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
 .user {
-  width: 400px;
+  width: 500px;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
   align-items: flex-start;
 }
 
@@ -34,14 +38,37 @@
   margin-bottom: 10px;
 }
 
+.references {
+  display: flex;
+  //justify-content: space-between;
+}
+
 .friend {
+  text-align: center;
   margin-bottom: 20px;
+}
+
+.content {
+  display: flex;
+  align-items: flex-start;
 }
 
 .friendList {
-  width: 400px;
+ width: 172px;
+ margin-right: 20px;
 }
 
 .link {
+  display: block;
   margin-bottom: 20px;
+  width: 100%;
+  text-align: center;
+
+  &:active {
+    text-decoration: none;
+  }
+}
+
+.wall {
+ width: 320px;
 }

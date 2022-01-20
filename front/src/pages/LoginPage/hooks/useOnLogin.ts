@@ -1,6 +1,6 @@
 import {HttpStatus, IUseRequestState, LoginForm} from '../../../types';
 import {useRequest} from '../../../hooks';
-import {loginPost} from '../../../api';
+import {login} from '../../../api';
 import {useCallback} from 'react';
 import {userAuthEvent} from '../../../store/user';
 
@@ -14,7 +14,7 @@ export const useOnLogin = (): IUseLogin => {
     const onSubmit = useCallback(
         async (values: LoginForm): Promise<void> => {
             setIsFetch(true);
-            const resp = await loginPost(values);
+            const resp = await login(values);
 
             if (resp.status === HttpStatus.Ok) {
                 setRequestState('success');

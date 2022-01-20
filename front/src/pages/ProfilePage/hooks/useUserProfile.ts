@@ -3,7 +3,8 @@ import {useRequest} from '../../../hooks';
 import {useLocation} from 'react-router';
 import * as queryString from 'query-string';
 import {useEffect, useState} from 'react';
-import {friendListGet, profileGet} from '../../../api';
+import {getFriendList, getProfile} from '../../../api';
+import {useUserId} from './useUserId';
 
 export interface ILoadProfile {
     (): Promise<void>;
@@ -26,7 +27,7 @@ const useLoadProfile = (
         setRequestState(null);
 
         try {
-            const resp = await profileGet(id as string);
+            const resp = await getProfile(id as string);
             let profile: UserProfile | null = null;
 
             if (resp.status === HttpStatus.Ok) {
@@ -36,7 +37,7 @@ const useLoadProfile = (
                 throw new Error(await resp.text());
             }
 
-            const friendResp = await friendListGet(id as string);
+            const friendResp = await getFriendList(id as string);
 
             if (profile && friendResp.status === HttpStatus.Ok) {
                 setRequestState('success');
@@ -54,14 +55,12 @@ const useLoadProfile = (
     };
 };
 
-export const useUserProfile = (): IUseUserProfile => {
+export const useUserProfile = (profileId: number): IUseUserProfile => {
     const {setIsFetch, setRequestState, setError, requestState, error, isFetch} = useRequest();
     const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-    const location = useLocation();
-    const {id} = queryString.parse(location.search);
 
     const loadProfile = useLoadProfile(
-        id as string,
+        profileId,
         setIsFetch,
         setRequestState,
         setError,
@@ -72,7 +71,7 @@ export const useUserProfile = (): IUseUserProfile => {
         // noinspection JSIgnoredPromiseFromCall
         loadProfile();
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [location]);
+    }, [profileId]);
 
     return {
         error,

@@ -8,3 +8,10 @@ export type Post = {
 };
 
 export type CreatePostForm = Pick<Post, 'authorId' | 'content' | 'imageLink'>;
+
+export type PostListQuery = {
+    ids?: number[];
+    authorId?: number;
+    take?: number;
+    skip?: number;
+};

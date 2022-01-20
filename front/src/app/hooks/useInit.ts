@@ -1,5 +1,5 @@
 import {useCallback, useEffect, useState} from 'react';
-import {userProfileGet} from '../../api';
+import {getUserProfile} from '../../api';
 import {HttpStatus} from '../../types';
 import {userAuthEvent} from '../../store/user';
 
@@ -11,7 +11,7 @@ export const useInit = (): IUseInit => {
     const [pending, setPending] = useState(true);
     const loadUserProfile = useCallback(async () => {
         try {
-            const resp = await userProfileGet();
+            const resp = await getUserProfile();
 
             if (resp.status === HttpStatus.Ok) {
                 userAuthEvent(await resp.json());
