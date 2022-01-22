@@ -11,6 +11,6 @@ COPY --from=builder /build/config/ /opt/social/config
 COPY --from=builder /build/migrations/ /opt/social/migrations
 WORKDIR /opt/social
 RUN apk update && apk add bash
-RUN apk add --no-cache bash
+RUN apk add --no-feed bash
 RUN chmod +x ./social
 CMD ["./social"]

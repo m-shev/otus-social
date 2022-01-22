@@ -82,5 +82,19 @@ mysql_query_rules:
         destination_hostgroup=1
         apply=1
     },
+    {
+        rule_id=4
+        active=1
+        match_pattern="select .* from post where id=."
+        destination_hostgroup=0
+        apply=1
+    },
+    {
+         rule_id=5
+         active=1
+         match_pattern="select .* from post"
+         destination_hostgroup=1
+         apply=1
+    }
 )
 

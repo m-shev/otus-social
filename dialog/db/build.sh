@@ -21,7 +21,7 @@ for shard in "${shardList[@]}"; do
 done
 
 ### build dialog db
-#docker build --no-cache -f ./dialog/Dockerfile -t dialog-db:latest .
+#docker build --no-feed -f ./dialog/Dockerfile -t dialog-db:latest .
 #
 ### build message db
-#docker build --no-cache -f ./message/Dockerfile -t messge-db:latest .
+#docker build --no-feed -f ./message/Dockerfile -t messge-db:latest .

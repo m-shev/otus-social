@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 set -e
-#bash -c "cd .. && docker build -f nginx/Dockerfile --no-cache -t sigma-nginx:latest ."
+#bash -c "cd .. && docker build -f nginx/Dockerfile --no-feed -t sigma-nginx:latest ."
 #docker save -o ./images/sigma-nginx.tar sigma-nginx:latest
 
 ## back
-#bash -c "cd ../back && docker build --no-cache -t sigma-social:latest ."
+#bash -c "cd ../back && docker build --no-feed -t sigma-social:latest ."
 #docker save -o ./images/sigma-social.tar sigma-social:latest
 
 ## db
