@@ -6,6 +6,7 @@ type Config struct {
 	Db
 	Server
 	Protection
+	Broker
 }
 
 type Db struct {
@@ -28,4 +29,15 @@ type Server struct {
 
 type Protection struct {
 	AllowOrigins []string
+}
+
+type Broker struct {
+	BrokerUrls []string
+	PostTopic  Topic
+}
+
+type Topic struct {
+	Name              string
+	NumPartitions     int
+	ReplicationFactor int
 }

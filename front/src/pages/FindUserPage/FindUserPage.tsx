@@ -10,6 +10,7 @@ import {FriendList} from '../../components/FriendList';
 
 export const FindUserPage: React.FC = () => {
     const userList = useLastUserList();
+    console.log('dev -------->', userList);
     const {findList, isFetch, onSubmit, firstSearchFlag} = useOnFind();
     const formik = useFormik({
         initialValues,

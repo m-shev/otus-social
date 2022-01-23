@@ -4,7 +4,7 @@ type Repository interface {
 	Create(form CreateUserForm) (User, error)
 	GetById(id int) (User, error)
 	FindUserByEmail(email string) (User, error)
-	FindUsers(form FindUsersForm) ([]Friend, error)
+	FindUsers(form FindUsersForm) ([]Friend, int, error)
 	AddFriend(userId int, fiendId int) error
 	RemoveFriend(userId int, fiendId int) error
 	GetFriendList(userId int, skip int, take int) (friendList []Friend, total int, err error)

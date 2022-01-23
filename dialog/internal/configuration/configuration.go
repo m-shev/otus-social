@@ -39,7 +39,7 @@ type DbConfig struct {
 const (
 	prefix            = "dialog"
 	defaultConfig     = "default"
-	defaultConfigPath = "./config"
+	defaultConfigPath = "./configuration"
 )
 
 var conf = &Configuration{}

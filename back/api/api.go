@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/m-shev/otus-social/back/internal/config"
 	"github.com/m-shev/otus-social/back/internal/connector"
+	"github.com/m-shev/otus-social/back/internal/repositories/broker"
 	poststorage "github.com/m-shev/otus-social/back/internal/repositories/post-storage"
 	userstorage "github.com/m-shev/otus-social/back/internal/repositories/user-storage"
 	"github.com/m-shev/otus-social/back/internal/services/post"
@@ -23,13 +24,19 @@ type Api struct {
 	defaultSession DefaultSession
 }
 
-func NewApi(conf config.Db, logger *log.Logger, defaultSession DefaultSession) *Api {
-	dbConnect := connector.NewDbConnector(conf, logger)
+func NewApi(dbConf config.Db, brokerConf config.Broker, logger *log.Logger, defaultSession DefaultSession) *Api {
+	dbConnect := connector.NewDbConnector(dbConf, logger)
 	userRepository := userstorage.NewRepository(dbConnect)
 	userService := user.NewService(userRepository)
 
 	postRepository := poststorage.NewRepository(dbConnect)
-	postService := post.NewService(postRepository)
+	queue, err := broker.NewBroker(brokerConf, logger)
+
+	if err != nil {
+		panic(err)
+	}
+
+	postService := post.NewService(postRepository, queue)
 
 	return &Api{
 		userService:    userService,
@@ -271,7 +278,7 @@ func (a *Api) UserList(c *gin.Context) {
 		return
 	}
 
-	friendList, err := a.userService.FindUsers(form)
+	userList, total, err := a.userService.FindUsers(form)
 
 	if err != nil {
 		c.String(http.StatusInternalServerError, err.Error())
@@ -279,7 +286,12 @@ func (a *Api) UserList(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, friendList)
+	res := userListResponse{
+		UserList: userList,
+		Total:    total,
+	}
+
+	c.JSON(http.StatusOK, res)
 }
 
 func convFriendListParam(c *gin.Context) (userId, skip, take int, err error) {

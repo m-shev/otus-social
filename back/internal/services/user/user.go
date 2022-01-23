@@ -43,7 +43,7 @@ func (s *Service) FindUser(email string) (User, error) {
 	return u, err
 }
 
-func (s *Service) FindUsers(form FindUsersForm) ([]Friend, error) {
+func (s *Service) FindUsers(form FindUsersForm) ([]Friend, int, error) {
 	return s.repository.FindUsers(form)
 }
 

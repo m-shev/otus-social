@@ -7,23 +7,25 @@ import (
 )
 
 const selectStr = "select user.id, user.name, user.surname, user.avatar from user"
+const selectTotal = "select count(user.id) from user"
 
-func (r *Repository) FindUsers(form user.FindUsersForm) ([]user.Friend, error) {
+func (r *Repository) FindUsers(form user.FindUsersForm) ([]user.Friend, int, error) {
 	var err error
 	var rows *sql.Rows
+	var total int
 
 	if form.Name != "" && form.Surname != "" {
-		rows, err = r.fullUserQuery(form)
+		rows, total, err = r.fullUserQuery(form)
 	} else if form.Name != "" {
-		rows, err = r.findUserByQuery(form, "name")
+		rows, total, err = r.findUserByQuery(form, "name")
 	} else if form.Surname != "" {
-		rows, err = r.findUserByQuery(form, "surname")
+		rows, total, err = r.findUserByQuery(form, "surname")
 	} else {
-		rows, err = r.findUserQuery(form)
+		rows, total, err = r.findUserQuery(form)
 	}
 
 	if err != nil {
-		return nil, err
+		return nil, total, err
 	}
 
 	users := make([]user.Friend, 0)
@@ -32,13 +34,13 @@ func (r *Repository) FindUsers(form user.FindUsersForm) ([]user.Friend, error) {
 		var friend user.Friend
 
 		if err = scanFriend(rows, &friend); err != nil {
-			return nil, err
+			return nil, total, err
 		}
 
 		users = append(users, friend)
 	}
 
-	return users, err
+	return users, total, err
 }
 
 func (r *Repository) AddFriend(userId int, fiendId int) error {
@@ -92,27 +94,76 @@ func (r *Repository) GetFriendList(userId int, skip int, take int) ([]user.Frien
 	return friendList, total, err
 }
 
-func (r *Repository) fullUserQuery(form user.FindUsersForm) (*sql.Rows, error) {
-	query := selectStr + " where name like concat(?, '%') and surname like concat(?, '%')"
+func (r *Repository) fullUserQuery(form user.FindUsersForm) (*sql.Rows, int, error) {
+	additions := " where name like concat(?, '%') and surname like concat(?, '%')"
+	query := selectStr + additions
+	queryTotal := selectTotal + additions
 	query = addOrder(query)
+
 	rows, err := r.db.QueryContext(r.createContext(), query, form.Name, form.Surname, form.Skip, form.Take)
 
-	return rows, err
-}
-
-func (r *Repository) findUserByQuery(form user.FindUsersForm, by string) (*sql.Rows, error) {
-	query := fmt.Sprintf("%s where %s like concat(?, '%%')", selectStr, by)
-	query = addOrder(query)
-	if by == "name" {
-		return r.db.QueryContext(r.createContext(), query, form.Name, form.Skip, form.Take)
+	if err != nil {
+		return rows, 0, err
 	}
 
-	return r.db.QueryContext(r.createContext(), query, form.Surname, form.Skip, form.Take)
+	row := r.db.QueryRowContext(r.createContext(), queryTotal, form.Name, form.Surname)
+
+	var total int
+
+	err = row.Scan(&total)
+
+	return rows, total, err
 }
 
-func (r *Repository) findUserQuery(form user.FindUsersForm) (*sql.Rows, error) {
+func (r *Repository) findUserByQuery(form user.FindUsersForm, by string) (*sql.Rows, int, error) {
+	query := fmt.Sprintf("%s where %s like concat(?, '%%')", selectStr, by)
+	queryTotal := fmt.Sprintf("%s where %s like concat(?, '%%')", selectTotal, by)
+	query = addOrder(query)
+	var total int
+
+	if by == "name" {
+		rows, err := r.db.QueryContext(r.createContext(), query, form.Name, form.Skip, form.Take)
+
+		if err != nil {
+			return rows, 0, err
+		}
+
+		row := r.db.QueryRowContext(r.createContext(), queryTotal, form.Name)
+
+		err = row.Scan(&total)
+
+		return rows, total, err
+	}
+
+	rows, err := r.db.QueryContext(r.createContext(), query, form.Surname, form.Skip, form.Take)
+
+	if err != nil {
+		return rows, 0, err
+	}
+
+	row := r.db.QueryRowContext(r.createContext(), queryTotal, form.Surname)
+
+	err = row.Scan(&total)
+
+	return rows, total, err
+}
+
+func (r *Repository) findUserQuery(form user.FindUsersForm) (*sql.Rows, int, error) {
 	query := addOrder(selectStr)
-	return r.db.QueryContext(r.createContext(), query, form.Skip, form.Take)
+
+	rows, err := r.db.QueryContext(r.createContext(), query, form.Skip, form.Take)
+
+	if err != nil {
+		return rows, 0, err
+	}
+
+	var total int
+
+	row := r.db.QueryRowContext(r.createContext(), selectTotal)
+
+	err = row.Scan(&total)
+
+	return rows, total, err
 }
 
 func scanFriend(rows *sql.Rows, friend *user.Friend) error {

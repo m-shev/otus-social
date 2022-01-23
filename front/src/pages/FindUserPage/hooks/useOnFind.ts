@@ -32,9 +32,10 @@ export const useOnFind = (): IUseOnFind => {
                 if (resp.status === HttpStatus.Ok) {
                     setFlag(true);
                     setRequestState('success');
-                    setFindList(await resp.json());
+                    setFindList((await resp.json())?.userList || []);
                 } else {
                     setRequestState('fail');
+                    // noinspection ExceptionCaughtLocallyJS
                     throw new Error(await resp.text());
                 }
             } catch (e) {

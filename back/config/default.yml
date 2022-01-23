@@ -1,4 +1,4 @@
-server:
+Server:
   StartDelay: 0
   Host: "0.0.0.0"
   Port: "3005"
@@ -6,7 +6,7 @@ Protection:
   AllowOrigins:
     - "http://localhost:3000"
     - "http://localhost"
-db:
+Db:
   Password: "alsdgkjsadf"
   User: "social"
   Port: "6033"
@@ -16,3 +16,11 @@ db:
   MaxOpenIdleConnection: 100
   ConnMaxLifetime: 10
   MigrationPath: "./migrations"
+Broker:
+    BrokerUrls:
+      - "localhost:49171"
+      - "localhost:43173"
+    PostTopic:
+      Name: "topic-post"
+      NumPartitions: 2
+      ReplicationFactor: 2

@@ -8,6 +8,15 @@ type Repository interface {
 	GetList(params ListParams) ([]Post, error)
 }
 
+type Queue interface {
+	WriteJSON(key string, v interface{}) error
+}
+
+type CreatedPostMessage struct {
+	PostId   int `json:"postId"`
+	AuthorId int `json:"authorId"`
+}
+
 type Post struct {
 	Id        int       `json:"id"`
 	AuthorId  int       `json:"authorId"`

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/segmentio/kafka-go"
 	"log"
@@ -13,10 +14,14 @@ import (
 func main() {
 	createTopic()
 	logger := log.Default()
-
-	go produce(logger)
+	//go produce(logger)
 	consume(logger)
-	time.Sleep(time.Minute * 5)
+
+}
+
+type PostCreatedMessage struct {
+	PostId   int `json:"postId"`
+	AuthorId int `json:"authorId"`
 }
 
 func createTopic() {
@@ -68,7 +73,7 @@ func createTopic() {
 func consume(logger *log.Logger) {
 	r := kafka.NewReader(kafka.ReaderConfig{
 		Brokers:     []string{"localhost:49171", "localhost:49173"},
-		Topic:       "test-topic-2",
+		Topic:       "topic-post",
 		Logger:      kafka.LoggerFunc(logger.Printf),
 		ErrorLogger: kafka.LoggerFunc(logger.Printf),
 		GroupID:     "test-group-id",
@@ -80,8 +85,16 @@ func consume(logger *log.Logger) {
 		if err != nil {
 			logger.Print(err.Error())
 		}
+		var postMessage PostCreatedMessage
 
-		fmt.Println("received message: ", string(msg.Value))
+		err = json.Unmarshal(msg.Value, &postMessage)
+
+		if err != nil {
+			logger.Printf("cant unmarshal message: %v", err.Error())
+		}
+
+		logger.Printf("message -> post created, id -> %d authorId -> %d",
+			postMessage.PostId, postMessage.AuthorId)
 	}
 }
 

@@ -11,7 +11,7 @@ export const useLastUserList = (): UserFriend[] => {
         const resp = await getUserList({skip: 0, take: TAKE_LAST_USER});
 
         if (resp.status === HttpStatus.Ok) {
-            const list = await resp.json();
+            const list = (await resp.json())?.userList || [];
             setUserList(list);
         }
     }, []);

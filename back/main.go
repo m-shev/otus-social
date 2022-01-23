@@ -38,7 +38,7 @@ func main() {
 }
 
 func makeRouter(conf config.Config, logger *log.Logger) *gin.Engine {
-	a := api.NewApi(conf.Db, logger, sessions.Default)
+	a := api.NewApi(conf.Db, conf.Broker, logger, sessions.Default)
 
 	handler := gin.New()
 

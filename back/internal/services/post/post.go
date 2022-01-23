@@ -1,15 +1,35 @@
 package post
 
+import (
+	"strconv"
+)
+
 type Service struct {
 	repository Repository
+	queue      Queue
 }
 
-func NewService(repository Repository) *Service {
-	return &Service{repository: repository}
+func NewService(repository Repository, queue Queue) *Service {
+	return &Service{repository: repository, queue: queue}
 }
 
 func (s *Service) Create(f CreatePostForm) (Post, error) {
-	return s.repository.Create(f)
+	post, err := s.repository.Create(f)
+
+	if err != nil {
+		return Post{}, err
+	}
+
+	err = s.queue.WriteJSON(strconv.Itoa(post.Id), CreatedPostMessage{
+		PostId:   post.Id,
+		AuthorId: post.AuthorId,
+	})
+
+	if err != nil {
+		return post, ErrorSendMessageToQueue
+	}
+
+	return post, err
 }
 
 func (s *Service) GetById(id int) (Post, error) {
