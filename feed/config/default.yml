@@ -20,5 +20,10 @@ Broker:
     - "localhost:43173"
   PostTopic:
     Name: "topic-post"
+    GroupId: "post-cache-id"
     NumPartitions: 2
     ReplicationFactor: 2
+
+Redis:
+  Port: 6379
+  Db: 0

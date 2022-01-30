@@ -3,11 +3,14 @@ package broker
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/m-shev/otus-social/back/internal/config"
+	"github.com/m-shev/otus-social/back/internal/services/notifier"
 	"github.com/segmentio/kafka-go"
 	"log"
 	"net"
 	"strconv"
+	"time"
 )
 
 type Broker struct {
@@ -16,7 +19,7 @@ type Broker struct {
 	log    *log.Logger
 }
 
-func NewBroker(conf config.Broker, logger *log.Logger) (*Broker, error) {
+func NewPostQueue(conf config.Broker, logger *log.Logger) (*Broker, error) {
 	err := createTopic(conf.BrokerUrls[0], conf.PostTopic)
 
 	if err != nil {
@@ -28,18 +31,23 @@ func NewBroker(conf config.Broker, logger *log.Logger) (*Broker, error) {
 	return b, nil
 }
 
-func (b *Broker) WriteJSON(key string, val interface{}) error {
+func (b *Broker) SendPostCreated(m notifier.MessagePostCreate) error {
+	return b.writeJSON(strconv.Itoa(m.PostId), m)
+}
+
+func (b *Broker) writeJSON(key string, val interface{}) error {
+
 	bytes, err := json.Marshal(val)
 
 	if err != nil {
 		return err
 	}
-
+	start := time.Now()
 	err = b.w.WriteMessages(context.Background(), kafka.Message{
 		Key:   []byte(key),
 		Value: bytes,
 	})
-
+	fmt.Println("finished operation", time.Since(start))
 	return err
 }
 
@@ -47,7 +55,7 @@ func createWriter(conf config.Broker, log *log.Logger) *kafka.Writer {
 	return &kafka.Writer{
 		Addr:         kafka.TCP(conf.BrokerUrls...),
 		Topic:        conf.PostTopic.Name,
-		RequiredAcks: kafka.RequireAll,
+		RequiredAcks: kafka.RequireOne,
 		Balancer:     &kafka.LeastBytes{},
 		Compression:  kafka.Snappy,
 		Logger:       kafka.LoggerFunc(log.Printf),

@@ -8,6 +8,7 @@ type Configuration struct {
 	Protection
 	Broker
 	Topic
+	Redis
 }
 
 type Server struct {
@@ -39,4 +40,11 @@ type Topic struct {
 	Name              string
 	NumPartitions     int
 	ReplicationFactor int
+	GroupId           string
+}
+
+type Redis struct {
+	Host string
+	Port string
+	DB   int
 }

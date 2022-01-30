@@ -9,7 +9,7 @@ type Repository interface {
 }
 
 type Queue interface {
-	WriteJSON(key string, v interface{}) error
+	writeJSON(key string, v interface{}) error
 }
 
 type CreatedPostMessage struct {

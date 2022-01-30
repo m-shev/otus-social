@@ -23,6 +23,8 @@ func (a *Api) CreatePost(c *gin.Context) {
 		return
 	}
 
+	go a.notifier.PostCreated(p.AuthorId, p.Id)
+
 	c.JSON(http.StatusOK, p)
 }
 

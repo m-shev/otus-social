@@ -20,7 +20,8 @@ Broker:
     BrokerUrls:
       - "localhost:49171"
       - "localhost:43173"
+      - "localhost:43175"
     PostTopic:
       Name: "topic-post"
       NumPartitions: 2
-      ReplicationFactor: 2
+      ReplicationFactor: 3

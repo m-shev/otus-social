@@ -5,7 +5,7 @@ import goconfig "github.com/m-shev/go-config"
 const (
 	prefix            = "feed"
 	defaultConfig     = "default"
-	defaultConfigPath = "./configuration"
+	defaultConfigPath = "./config"
 )
 
 var conf = &Configuration{}
