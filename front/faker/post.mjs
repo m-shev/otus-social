@@ -6,7 +6,7 @@ const baseUrl = 'http://localhost:3005';
 const userFriendsUrl = (userId) => `${baseUrl}/user/${userId}/friends?skip=0&take=1000`;
 const createPostUrl = () => `${baseUrl}/post`;
 
-const userIds = [11819]
+const userIds = [12201]
 
 const createPost = (number, authorId) => {
     const posts = [];
@@ -31,7 +31,7 @@ const generate = async () => {
 
     friendList.forEach((friend) => {
         const promises = [];
-        const posts = createPost(200, friend.id)
+        const posts = createPost(10, friend.id)
         posts.forEach(post => {
             promises.push(fetch(createPostUrl(), {
                 method: 'post',

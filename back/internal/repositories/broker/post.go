@@ -32,7 +32,7 @@ func NewPostQueue(conf config.Broker, logger *log.Logger) (*Broker, error) {
 }
 
 func (b *Broker) SendPostCreated(m notifier.MessagePostCreate) error {
-	return b.writeJSON(strconv.Itoa(m.PostId), m)
+	return b.writeJSON(strconv.Itoa(m.Post.Id), m)
 }
 
 func (b *Broker) writeJSON(key string, val interface{}) error {

@@ -1,8 +1,11 @@
 package notifier
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/m-shev/otus-social/back/internal/services/post"
+)
 
-func (s *Service) PostCreated(authorId int, postId int) {
+func (s *Service) PostCreated(authorId int, p post.Post) {
 	done := false
 	skip := 0
 
@@ -10,7 +13,7 @@ func (s *Service) PostCreated(authorId int, postId int) {
 		friends, total, err := s.userService.GetFriendList(authorId, takeFriends, skip)
 
 		if err != nil {
-			s.logger.Println(s.sendPostCreatedError(authorId, postId, err))
+			s.logger.Println(s.sendPostCreatedError(authorId, p.Id, err))
 			done = true
 		}
 
@@ -22,12 +25,12 @@ func (s *Service) PostCreated(authorId int, postId int) {
 
 		err = s.postQueue.SendPostCreated(MessagePostCreate{
 			AuthorId:  authorId,
-			PostId:    postId,
+			Post:      p,
 			Consumers: consumerIds,
 		})
 
 		if err != nil {
-			s.logger.Println(s.sendPostCreatedError(authorId, postId, err))
+			s.logger.Println(s.sendPostCreatedError(authorId, p.Id, err))
 			done = true
 		}
 

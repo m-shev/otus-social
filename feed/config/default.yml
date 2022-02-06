@@ -24,6 +24,9 @@ Broker:
     NumPartitions: 2
     ReplicationFactor: 2
 
-Redis:
-  Port: 6379
-  Db: 0
+Cache:
+  Redis:
+    Host: "localhost"
+    Port: 6379
+  ConsumerDb: 0
+  PostDb: 1

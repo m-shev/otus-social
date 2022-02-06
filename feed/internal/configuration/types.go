@@ -8,7 +8,7 @@ type Configuration struct {
 	Protection
 	Broker
 	Topic
-	Redis
+	Cache
 }
 
 type Server struct {
@@ -43,8 +43,13 @@ type Topic struct {
 	GroupId           string
 }
 
+type Cache struct {
+	Redis
+	ConsumerDb int
+	PostDb     int
+}
+
 type Redis struct {
 	Host string
 	Port string
-	DB   int
 }

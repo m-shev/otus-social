@@ -6,10 +6,10 @@ import (
 	"github.com/m-shev/otus-social/feed/internal/configuration"
 )
 
-func NewRedisConnector(config configuration.Redis) *redis.Client {
+func NewRedisConnector(config configuration.Redis, db int) *redis.Client {
 	return redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%s:%s", config.Host, config.Port),
 		Password: "",
-		DB:       config.DB,
+		DB:       db,
 	})
 }
