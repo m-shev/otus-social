@@ -11,3 +11,8 @@ type MessagePostCreate struct {
 	Post      post.Post
 	Consumers []int
 }
+
+type MessageRecreateCache struct {
+	Step string
+	Post post.Post
+}

@@ -14,9 +14,9 @@ import (
 )
 
 type Broker struct {
-	config config.Broker
-	w      *kafka.Writer
-	log    *log.Logger
+	config           config.Broker
+	createPostWriter *kafka.Writer
+	log              *log.Logger
 }
 
 func NewPostQueue(conf config.Broker, logger *log.Logger) (*Broker, error) {
@@ -26,16 +26,20 @@ func NewPostQueue(conf config.Broker, logger *log.Logger) (*Broker, error) {
 		return nil, err
 	}
 
-	b := &Broker{config: conf, log: logger, w: createWriter(conf, logger)}
+	b := &Broker{
+		config:           conf,
+		log:              logger,
+		createPostWriter: createWriter(conf.BrokerUrls, conf.PostTopic, logger),
+	}
 
 	return b, nil
 }
 
 func (b *Broker) SendPostCreated(m notifier.MessagePostCreate) error {
-	return b.writeJSON(strconv.Itoa(m.Post.Id), m)
+	return b.writePostCreated(strconv.Itoa(m.Post.Id), m)
 }
 
-func (b *Broker) writeJSON(key string, val interface{}) error {
+func (b *Broker) writePostCreated(key string, val interface{}) error {
 
 	bytes, err := json.Marshal(val)
 
@@ -43,7 +47,7 @@ func (b *Broker) writeJSON(key string, val interface{}) error {
 		return err
 	}
 	start := time.Now()
-	err = b.w.WriteMessages(context.Background(), kafka.Message{
+	err = b.createPostWriter.WriteMessages(context.Background(), kafka.Message{
 		Key:   []byte(key),
 		Value: bytes,
 	})
@@ -51,12 +55,12 @@ func (b *Broker) writeJSON(key string, val interface{}) error {
 	return err
 }
 
-func createWriter(conf config.Broker, log *log.Logger) *kafka.Writer {
+func createWriter(urls []string, topic config.Topic, log *log.Logger) *kafka.Writer {
 	return &kafka.Writer{
-		Addr:         kafka.TCP(conf.BrokerUrls...),
-		Topic:        conf.PostTopic.Name,
-		RequiredAcks: kafka.RequireOne,
-		Balancer:     &kafka.LeastBytes{},
+		Addr:         kafka.TCP(urls...),
+		Topic:        topic.Name,
+		RequiredAcks: kafka.RequireAll,
+		Balancer:     &kafka.RoundRobin{},
 		Compression:  kafka.Snappy,
 		Logger:       kafka.LoggerFunc(log.Printf),
 		ErrorLogger:  kafka.LoggerFunc(log.Printf),
@@ -71,7 +75,6 @@ func createTopic(url string, conf config.Topic) error {
 	}
 
 	topicConfig := kafka.TopicConfig{
-
 		Topic:             conf.Name,
 		NumPartitions:     conf.NumPartitions,
 		ReplicationFactor: conf.ReplicationFactor,

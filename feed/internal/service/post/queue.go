@@ -4,24 +4,20 @@ import (
 	"context"
 	"encoding/json"
 	"github.com/go-redis/redis"
-	"github.com/segmentio/kafka-go"
-	"log"
 	"strconv"
 )
 
-func NewPostService(consumerCache *redis.Client, postCache *redis.Client, createPostReader *kafka.Reader,
-	logger *log.Logger) *Service {
-	return &Service{
-		consumerCache:    consumerCache,
-		postCache:        postCache,
-		postCreateReader: createPostReader,
-		logger:           logger,
-		postCacheLimit:   50,
+func (s *Service) RecreateCacheMessage() {
+	for {
+		//msg, err := s.recreateCacheReader.ReadMessage(context.Background())
+		<-s.finishedReading
+
+		// recreateCache
 	}
 }
 
 func (s *Service) ConsumeCreateMessage() {
-	for {
+	for s.readCreatePost {
 		msg, err := s.postCreateReader.ReadMessage(context.Background())
 
 		if err != nil {
@@ -39,11 +35,13 @@ func (s *Service) ConsumeCreateMessage() {
 		s.logger.Printf("message -> post created, id -> %d authorId -> %d, consumers %v",
 			postMessage.Post.Id, postMessage.AuthorId, postMessage.Consumers)
 
-		s.handleMessage(postMessage)
+		s.handleCreatePost(postMessage)
 	}
+
+	s.finishedReading <- struct{}{}
 }
 
-func (s *Service) handleMessage(m CreatedPostMessage) {
+func (s *Service) handleCreatePost(m CreatedPostMessage) {
 
 	contentCache, err := s.getContentCache(m.Post)
 
@@ -70,7 +68,7 @@ func (s *Service) handleMessage(m CreatedPostMessage) {
 			return
 		}
 
-		addErr := s.addPostToConsumerCache(key, val, m.Post.Id)
+		addErr := s.addPostToFeed(key, val, m.Post.Id)
 
 		if addErr != nil {
 			s.logCantSetPostIds(key, addErr)
@@ -158,7 +156,7 @@ func (s *Service) checkPostConsumersCount(id int) {
 	}
 }
 
-func (s *Service) addPostToConsumerCache(key string, val string, id int) error {
+func (s *Service) addPostToFeed(key string, val string, id int) error {
 	var postIds []int
 	err := json.Unmarshal([]byte(val), &postIds)
 

@@ -1,9 +1,6 @@
 package post
 
 import (
-	"github.com/go-redis/redis"
-	"github.com/segmentio/kafka-go"
-	"log"
 	"time"
 )
 
@@ -25,14 +22,6 @@ type Content struct {
 type ContentCache struct {
 	Content
 	ConsumerCount int `json:"consumerCount"`
-}
-
-type Service struct {
-	consumerCache    *redis.Client
-	postCache        *redis.Client
-	postCreateReader *kafka.Reader
-	logger           *log.Logger
-	postCacheLimit   int
 }
 
 type FeedParams struct {
