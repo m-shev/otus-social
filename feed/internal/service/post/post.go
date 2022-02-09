@@ -1,6 +1,7 @@
 package post
 
 import (
+	"database/sql"
 	"github.com/go-redis/redis"
 	"github.com/segmentio/kafka-go"
 	"log"
@@ -12,6 +13,7 @@ type Service struct {
 	postCreateReader    *kafka.Reader
 	recreateCacheReader *kafka.Reader
 	logger              *log.Logger
+	db                  *sql.DB
 	postCacheLimit      int
 	readCreatePost      bool
 	finishedReading     chan struct{}

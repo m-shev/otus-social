@@ -12,7 +12,7 @@ func (s *Service) RecreateCacheMessage() {
 		//msg, err := s.recreateCacheReader.ReadMessage(context.Background())
 		<-s.finishedReading
 
-		// recreateCache
+		// startRecreate
 	}
 }
 
@@ -52,23 +52,24 @@ func (s *Service) handleCreatePost(m CreatedPostMessage) {
 
 	for _, v := range m.Consumers {
 		key := strconv.Itoa(v)
-		val, err := s.consumerCache.Get(key).Result()
+		postIds, err := s.getConsumerCache(key)
 
-		if err == redis.Nil {
-			postIds := []int{m.Post.Id}
-			initErr := s.initNewPostIds(key, postIds)
+		if err != nil {
+			s.logCantGetPostIds(key, err)
+			return
+		}
+
+		if len(postIds) == 0 {
+			initErr := s.initNewPostIds(key, contentCache.Content, postIds)
 
 			if initErr == nil {
 				contentCache.ConsumerCount++
 			}
 
 			continue
-		} else if err != nil {
-			s.logCantGetPostIds(key, err)
-			return
 		}
 
-		addErr := s.addPostToFeed(key, val, m.Post.Id)
+		addErr := s.addPostToFeed(key, postIds, m.Post.Id)
 
 		if addErr != nil {
 			s.logCantSetPostIds(key, addErr)
@@ -77,7 +78,25 @@ func (s *Service) handleCreatePost(m CreatedPostMessage) {
 		contentCache.ConsumerCount++
 	}
 
-	s.setContentCache(contentCache)
+	_ = s.setContentCache(contentCache)
+}
+
+func (s *Service) getConsumerCache(key string) ([]int, error) {
+	val, err := s.consumerCache.Get(key).Result()
+
+	if err == redis.Nil {
+		postIds := make([]int, 0)
+		return postIds, nil
+	}
+
+	var postIds []int
+	err = json.Unmarshal([]byte(val), &postIds)
+
+	if err != nil {
+		s.logCantUnmarshalPostIds(key, err)
+	}
+
+	return postIds, err
 }
 
 func (s *Service) getContentCache(post Content) (ContentCache, error) {
@@ -104,12 +123,13 @@ func (s *Service) getContentCache(post Content) (ContentCache, error) {
 	return contentCache, err
 }
 
-func (s *Service) setContentCache(contentCache ContentCache) {
+func (s *Service) setContentCache(contentCache ContentCache) error {
 	key := strconv.Itoa(contentCache.Id)
 	b, err := json.Marshal(contentCache)
 
 	if err != nil {
 		s.logCantMarshalPost(contentCache.Id, err)
+		return err
 	}
 
 	err = s.postCache.Set(key, b, 0).Err()
@@ -117,6 +137,8 @@ func (s *Service) setContentCache(contentCache ContentCache) {
 	if err != nil {
 		s.logCantSetPost(contentCache.Id, err)
 	}
+
+	return err
 }
 
 func (s *Service) checkPostConsumersCount(id int) {
@@ -156,15 +178,7 @@ func (s *Service) checkPostConsumersCount(id int) {
 	}
 }
 
-func (s *Service) addPostToFeed(key string, val string, id int) error {
-	var postIds []int
-	err := json.Unmarshal([]byte(val), &postIds)
-
-	if err != nil {
-		s.logCantUnmarshalPostIds(key, err)
-		return err
-	}
-
+func (s *Service) addPostToFeed(key string, postIds []int, id int) error {
 	postIds = append(postIds, id)
 
 	if len(postIds) > s.postCacheLimit {
@@ -194,7 +208,9 @@ func (s *Service) addPostToFeed(key string, val string, id int) error {
 	return nil
 }
 
-func (s *Service) initNewPostIds(key string, postIds []int) error {
+func (s *Service) initNewPostIds(key string, post Content, postIds []int) error {
+	postIds = append(postIds, post.Id)
+
 	bytes, err := json.Marshal(postIds)
 
 	if err != nil {
